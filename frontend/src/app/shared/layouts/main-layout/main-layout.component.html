@@ -1,0 +1,141 @@
+<!-- Etapa 3: MainLayout -->
+<div class="h-screen w-full flex bg-background font-inter overflow-hidden">
+  
+  <!-- SideNavBar -->
+  <nav class="bg-surface border-r border-outline-variant fixed left-0 top-0 h-full w-64 flex flex-col py-6 px-4 z-50">
+    <!-- Brand / Header -->
+    <div class="mb-4 pb-4 px-2 flex items-center gap-3 border-b border-outline-variant">
+      <img alt="RoomioHub Logo" class="h-16 w-auto mx-auto mb-2" src="/logo_roomiohub.svg"/>
+      <label class="font-bold text-xl text-on-surface" for="RoomioHub">RoomioHub</label>
+    </div>
+    
+    <!-- Navigation Links -->
+    <div class="flex-1 space-y-1 overflow-y-auto custom-scrollbar">
+      
+      @if (hasReceptionRole()) {
+        <a class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors duration-200" href="#">
+          <span class="material-symbols-outlined">home</span>
+          <span class="font-body-md text-body-md">Recepción</span>
+        </a>
+      }
+
+      @if (hasAdminRole()) {
+        <a class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors duration-200" href="#">
+          <span class="material-symbols-outlined">bar_chart_4_bars</span>
+          <span class="font-body-md text-body-md">Dashboard Métricas</span>
+        </a>
+      }
+
+      @if (hasCleaningRole()) {
+        <a class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors duration-200" href="#">
+          <span class="material-symbols-outlined">brush</span>
+          <span class="font-body-md text-body-md">Logística y Limpieza</span>
+        </a>
+      }
+
+      @if (hasAdminRole()) {
+        <div class="space-y-1 select-none mt-2">
+          <div (click)="toggleConfigMenu()" class="flex items-center justify-between px-3 py-3 text-on-surface-variant rounded-lg font-bold cursor-pointer hover:bg-surface-container-high hover:text-on-surface transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+              <span class="font-body-md text-body-md">Config. Maestra</span>
+            </div>
+            <span class="material-symbols-outlined transition-transform duration-200" [ngClass]="{'rotate-180': isConfigOpen()}">expand_more</span>
+          </div>
+          
+          @if (isConfigOpen()) {
+            <div class="pl-11 space-y-1 mt-1 animate-in fade-in slide-in-from-top-2 duration-200">
+              <a class="block py-2 text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Pisos</a>
+              <a class="block py-2 text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Habitaciones</a>
+              <a class="block py-2 text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Categorías</a>
+              <a class="block py-2 text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Planes y Tarifas</a>
+              <a class="block py-2 text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Promociones</a>
+              <a class="block py-2 text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Usuarios</a>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Bottom Actions (Logout) -->
+    <div class="pt-4 border-t border-outline-variant mt-4 shrink-0">
+      <button (click)="logout()" class="w-full flex items-center gap-3 px-3 py-2.5 text-error hover:bg-error-container hover:text-on-error-container rounded-lg font-medium transition-colors">
+        <span class="material-symbols-outlined text-[20px]">logout</span>
+        Cerrar Sesión
+      </button>
+    </div>
+  </nav>
+
+  <!-- Área Principal (Derecha) -->
+  <main class="flex-1 flex flex-col ml-64 min-h-screen h-screen">
+    
+    <!-- Topbar (Cabecera blanca) -->
+    <header class="h-16 bg-surface border-b border-outline-variant flex items-center justify-between px-6 shrink-0 z-40 relative shadow-sm">
+      
+      <!-- Izquierda: Dropdown Sede Activa -->
+      <div class="relative group">
+        <button class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant hover:border-outline px-4 py-2 rounded-lg text-sm font-medium text-on-surface transition-all">
+          <span class="font-medium"> Sede: </span>
+          {{ sedeActiva()?.nombre || 'Ninguna sede seleccionada' }}
+          <span class="material-symbols-outlined text-[18px] text-on-surface-variant ml-1">expand_more</span>
+        </button>
+        <!-- Menú Dropdown -->
+        <div class="absolute left-0 top-full mt-1 w-64 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+          <div class="px-4 py-3 border-b border-outline-variant">
+            <p class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Ubicación actual</p>
+            <p class="text-sm font-medium text-primary mt-0.5 truncate">{{ sedeActiva()?.direccion || 'Sin dirección registrada' }}</p>
+          </div>
+          <ul class="py-1 text-sm text-on-surface">
+            <li>
+              <button (click)="changeSede()" class="w-full text-left px-4 py-2 hover:bg-surface-container-low flex items-center gap-2 text-primary font-medium transition-colors">
+                <span class="material-symbols-outlined text-[18px]">swap_horiz</span>
+                Cambiar de sede
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Derecha: Perfil de usuario y notificaciones -->
+      <div class="flex items-center gap-6">
+        <!-- Notificaciones -->
+        <button class="relative text-on-surface-variant hover:text-on-surface transition-colors">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="absolute top-0.5 right-0 block w-2 h-2 bg-error rounded-full ring-2 ring-surface"></span>
+        </button>
+        
+        <!-- Perfil -->
+        <div class="flex items-center gap-3 border-l border-outline-variant pl-6 cursor-pointer">
+          <div class="text-right hidden md:block">
+            <p class="text-sm font-bold text-on-surface font-jakarta">@if (currentUser()) { {{ currentUser()?.username }} } @else { Usuario }</p>
+            <p class="text-xs text-on-surface-variant font-medium capitalize">{{ currentUser()?.rol?.replace('ROLE_', '')?.toLowerCase() || 'Cargando...' }}</p>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm shadow-inner uppercase">
+            {{ currentUser()?.username?.substring(0, 2) || 'RH' }}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido (Main Content Area) -->
+    <div class="p-8 overflow-y-auto flex-1 bg-background">
+      
+      @if (sedeActiva()) {
+        <router-outlet></router-outlet>
+      } @else {
+        <!-- Fallback if no sede is selected somehow -->
+        <div class="border-2 border-dashed border-error/30 rounded-2xl h-full min-h-[500px] flex flex-col items-center justify-center bg-error-container/20 mt-4">
+          <span class="material-symbols-outlined text-4xl text-error mb-3">error</span>
+          <h3 class="text-sm font-semibold text-error font-jakarta">Acceso Restringido</h3>
+          <p class="mt-1 text-sm text-error/80 max-w-sm text-center mb-4">
+            Debes seleccionar una sede operativa para gestionar los recursos de RoomioHub.
+          </p>
+          <button (click)="changeSede()" class="px-4 py-2 bg-error text-on-error rounded-full font-label-md hover:bg-error/90 transition-colors">
+            Volver a Selección de Sede
+          </button>
+        </div>
+      }
+
+    </div>
+  </main>
+</div>

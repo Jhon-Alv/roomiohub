@@ -1,0 +1,150 @@
+<div class="bg-background min-h-screen flex items-center justify-center font-body-md text-body-md text-on-surface antialiased w-full relative">
+  
+  <!-- Gateway Screen Container -->
+  <main class="w-full max-w-5xl px-gutter sm:px-6 lg:px-8 py-12 mx-auto">
+    <!-- Header Section -->
+    <header class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-xl mb-6 shadow-md text-on-primary">
+        <span class="material-symbols-outlined text-4xl" data-icon="domain" data-weight="fill" style="font-variation-settings: 'FILL' 1;">domain</span>
+      </div>
+      <h1 class="font-display text-display text-on-background mb-4">Selecciona tu Sede de Operación</h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Elige la sucursal para gestionar, o registra una nueva para expandir tu red operativa.</p>
+    </header>
+    
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="flex justify-center items-center h-32">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    } @else {
+      <!-- Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Loop Sedes -->
+        @for (sede of sedes(); track sede.id) {
+          <button (click)="selectSede(sede)" class="group relative bg-surface-container-lowest rounded-xl p-6 text-left border border-outline-variant shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary group-hover:bg-blue-200 transition-colors">
+                <span class="material-symbols-outlined text-2xl" data-icon="apartment">apartment</span>
+              </div>
+              @if (sede.activo) {
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed border border-tertiary-fixed-dim">
+                  <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-fixed mr-1.5"></span>
+                  Activa
+                </span>
+              } @else {
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container border border-error">
+                  <span class="w-1.5 h-1.5 rounded-full bg-on-error-container mr-1.5"></span>
+                  Inactiva
+                </span>
+              }
+            </div>
+            <h3 class="font-h3 text-h3 text-on-surface mb-2">{{ sede.nombre }}</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+              {{ sede.direccion }}
+            </p>
+            <div class="mt-6 pt-4 border-t border-outline-variant/50 flex justify-between items-center text-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity">
+              <span>Acceder al panel</span>
+              <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+            </div>
+          </button>
+        }
+
+        <!-- Add New Branch (Admin Only) -->
+        @if (hasRoleAdmin()) {
+          <button (click)="openModal()" class="group relative bg-transparent rounded-xl p-6 min-h-60 flex flex-col items-center justify-center text-center border-2 border-dashed border-outline hover:bg-surface-container-low hover:border-primary transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center bg-surface-variant text-on-surface-variant group-hover:bg-blue-200 group-hover:text-primary transition-colors mb-4">
+              <span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+            </div>
+            <span class="font-h3 text-h3 text-on-surface-variant group-hover:text-primary transition-colors">Añadir nueva sede</span>
+          </button>
+        }
+
+      </div>
+    }
+  </main>
+
+  <!-- Logout Button (Bottom Left) -->
+  <button (click)="logout()" class="absolute bottom-6 left-6 flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-full shadow-sm transition-colors font-label-md">
+    <span class="material-symbols-outlined text-xl">logout</span>
+    Cerrar Sesión
+  </button>
+
+  <!-- Modal Creación de Sede -->
+  @if (isModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-on-background/50 backdrop-blur-sm p-4">
+      <div class="bg-surface-container-lowest rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        
+        <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
+          <h2 class="font-h2 text-h2 text-on-surface">Registrar Sede</h2>
+          <button (click)="closeModal()" class="text-on-surface-variant hover:text-error transition-colors rounded-full p-1 hover:bg-error-container">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <form [formGroup]="sedeForm" (ngSubmit)="onSubmitSede()" class="p-6">
+          
+          <div class="space-y-5">
+            <!-- Nombre Input -->
+            <div>
+              <label for="nombre" class="block font-label-md text-on-surface mb-1.5">Nombre de la Sede <span class="text-error">*</span></label>
+              <input type="text" id="nombre" formControlName="nombre" 
+                     class="w-full px-4 py-2.5 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                     [ngClass]="{'border-error focus:border-error focus:ring-error': sedeForm.get('nombre')?.invalid && sedeForm.get('nombre')?.touched}"
+                     placeholder="Ej. Hostal El Refugio">
+              
+              @if (sedeForm.get('nombre')?.invalid && sedeForm.get('nombre')?.touched) {
+                <div class="mt-1 text-sm text-error flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">error</span>
+                  @if (sedeForm.get('nombre')?.errors?.['required']) {
+                    <span>El nombre de la sede es obligatorio.</span>
+                  }
+                  @if (sedeForm.get('nombre')?.errors?.['maxlength']) {
+                    <span>El nombre no puede superar los 255 caracteres.</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Direccion Input -->
+            <div>
+              <label for="direccion" class="block font-label-md text-on-surface mb-1.5">Dirección</label>
+              <textarea id="direccion" formControlName="direccion" rows="3"
+                        class="w-full px-4 py-2.5 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
+                        [ngClass]="{'border-error focus:border-error focus:ring-error': sedeForm.get('direccion')?.invalid && sedeForm.get('direccion')?.touched}"
+                        placeholder="Av. Principal 123..."></textarea>
+              
+              @if (sedeForm.get('direccion')?.invalid && sedeForm.get('direccion')?.touched) {
+                <div class="mt-1 text-sm text-error flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">error</span>
+                  @if (sedeForm.get('direccion')?.errors?.['maxlength']) {
+                    <span>La dirección no puede superar los 500 caracteres.</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-8 flex justify-end gap-3">
+            <button type="button" (click)="closeModal()" class="px-5 py-2.5 rounded-full font-label-md text-primary hover:bg-primary-container/50 transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" [disabled]="isSaving()" 
+                    class="px-5 py-2.5 rounded-full font-label-md bg-primary text-on-primary hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+              @if (isSaving()) {
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-on-primary"></div>
+                Guardando...
+              } @else {
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                Guardar Sede
+              }
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: roomiohub-backend
+  datasource:
+    url: ${BD_ROOMIOHUB_URL:jdbc:postgresql://localhost:5432/roomiohub_db?timezone=America/Lima}
+    username: ${BD_ROOMIOHUB_USERNAME:user}
+    password: ${BD_ROOMIOHUB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  jackson:
+    time-zone: America/Lima
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY:NzE3MzY1NjM3MjY1NzQ3NDY4Njk3MzY5NzM3MzY1NjM3MjY1NzQ2YjY1Nzk3MjY1NzE3MzY1NjM3MjY1NzQ3NA}
+      expiration-time: 86400000
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}

@@ -1,4 +1,4 @@
-package com.roomiohub.backend.modules.admin.model;
+package com.roomiohub.backend.security.identity.model;
 
 import com.roomiohub.backend.shared.persistence.TenantBaseEntity;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "sedes")
-public class Sede extends TenantBaseEntity {
+public class SedeEntity extends TenantBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

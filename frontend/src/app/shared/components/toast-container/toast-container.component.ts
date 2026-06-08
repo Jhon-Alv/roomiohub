@@ -7,9 +7,7 @@ import { NotificationService } from '../../../core/services/notification.service
   standalone: true,
   imports: [CommonModule],
   template: `
-    <!-- Contenedor fijo arriba a la derecha. Usamos pointer-events-none para que no bloquee clicks debajo, 
-         pero pointer-events-auto en cada toast individual. -->
-    <div class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+    <div class="fixed top-6 right-6 z-9999 flex flex-col gap-3 w-full max-w-sm pointer-events-none">
       @for (toast of notificationService.toasts(); track toast.id) {
         
         <!-- ERROR TOAST -->
@@ -17,7 +15,7 @@ import { NotificationService } from '../../../core/services/notification.service
           <div class="pointer-events-auto flex w-full shadow-lg border-l-4 overflow-hidden toast-slide-in bg-rose-50 border-rose-500 rounded-xl"
                [class.toast-slide-out]="toast.closing">
             <div class="flex p-4 w-full">
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <span class="material-symbols-outlined text-rose-600 text-[24px]">error</span>
               </div>
               <div class="ml-3 flex-1 pt-0.5">
@@ -26,7 +24,7 @@ import { NotificationService } from '../../../core/services/notification.service
                   {{ toast.message }}
                 </div>
               </div>
-              <div class="ml-4 flex-shrink-0 flex pt-0.5">
+              <div class="ml-4 shrink-0 flex pt-0.5">
                 <button (click)="notificationService.removeToast(toast.id)" class="inline-flex text-rose-500 hover:text-rose-700 focus:outline-none transition-colors" type="button">
                   <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
@@ -40,7 +38,7 @@ import { NotificationService } from '../../../core/services/notification.service
           <div class="pointer-events-auto flex w-full shadow-lg border-l-4 overflow-hidden toast-slide-in bg-amber-50 border-amber-500 rounded-xl"
                [class.toast-slide-out]="toast.closing">
             <div class="flex p-4 w-full">
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <span class="material-symbols-outlined text-amber-600 text-[24px]">warning</span>
               </div>
               <div class="ml-3 flex-1 pt-0.5">
@@ -49,7 +47,7 @@ import { NotificationService } from '../../../core/services/notification.service
                   {{ toast.message }}
                 </div>
               </div>
-              <div class="ml-4 flex-shrink-0 flex pt-0.5">
+              <div class="ml-4 shrink-0 flex pt-0.5">
                 <button (click)="notificationService.removeToast(toast.id)" class="inline-flex text-amber-600 hover:text-amber-800 focus:outline-none transition-colors" type="button">
                   <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
@@ -63,7 +61,7 @@ import { NotificationService } from '../../../core/services/notification.service
           <div class="pointer-events-auto flex w-full shadow-lg border-l-4 overflow-hidden toast-slide-in bg-emerald-50 border-emerald-500 rounded-xl"
                [class.toast-slide-out]="toast.closing">
             <div class="flex p-4 w-full">
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <span class="material-symbols-outlined text-emerald-600 text-[24px]">check_circle</span>
               </div>
               <div class="ml-3 flex-1 pt-0.5">
@@ -72,7 +70,7 @@ import { NotificationService } from '../../../core/services/notification.service
                   {{ toast.message }}
                 </div>
               </div>
-              <div class="ml-4 flex-shrink-0 flex pt-0.5">
+              <div class="ml-4 shrink-0 flex pt-0.5">
                 <button (click)="notificationService.removeToast(toast.id)" class="inline-flex text-emerald-600 hover:text-emerald-800 focus:outline-none transition-colors" type="button">
                   <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>

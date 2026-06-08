@@ -45,6 +45,6 @@ export class NotificationService {
     );
     setTimeout(() => {
       this.toasts.update(current => current.filter(t => t.id !== id));
-    }, 400); 
+    }, 200); 
   }
 }

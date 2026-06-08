@@ -23,6 +23,10 @@ public class RegisterRequest {
     @Size(min = 11, max = 20, message = "El RUC no puede exceder los '{max}' caracteres")
     private String ruc;
 
+    @NotBlank
+    @Size(max = 150, message = "El nombre no puede exceder los '{max}' caracteres")
+    private String nombre;
+
     @NotBlank(message = "El usuario es obligatorio")
     @Size(max = 100, message = "El usuario no puede exceder los '{max}' caracteres")
     private String username;

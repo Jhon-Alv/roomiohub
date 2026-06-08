@@ -1,4 +1,4 @@
-package com.roomiohub.backend.modules.admin.dto.request;
+package com.roomiohub.backend.modules.admin.dto.sede.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateSedeRequest {
+public class CreateSedeRequest {
 
     @NotBlank(message = "El nombre de la sede es obligatorio")
     @Size(max = 255, message = "El nombre no puede superar los 255 caracteres")

@@ -1,4 +1,4 @@
-package com.roomiohub.backend.modules.admin.dto.request;
+package com.roomiohub.backend.modules.admin.dto.sede.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

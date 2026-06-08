@@ -43,6 +43,7 @@ public interface AuthMapper {
     @Mapping(target = "password", source = "encodedPassword")
     @Mapping(target = "rol", source = "rol")
     @Mapping(target = "username", source = "request.username")
+    @Mapping(target = "nombre", source = "request.nombre")
     UsuarioEntity toUsuario(RegisterRequest request, String encodedPassword, RolUsuario rol);
 
     @Mapping(target = "passwordTemporal", source = "rawPassword")

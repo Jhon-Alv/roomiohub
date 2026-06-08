@@ -2,28 +2,28 @@
 <div class="h-screen w-full flex font-inter">
   
   <!-- Lado Izquierdo (Formulario) -->
-  <div class="w-full lg:w-1/2 bg-neutral-light flex flex-col items-center justify-center p-8 relative">
-    <div class="max-w-sm w-full text-center mb-10">
-      <div class="flex items-center justify-center gap-3 mb-2">
-        <img src="/logo_roomiohub.svg" alt="RoomioHub Logo" class="h-10 w-auto">
+  <div class="w-full lg:w-2/5 bg-neutral-light flex flex-col items-center justify-center relative">
+    <div class="max-w-md w-full text-center mb-10">
+      <div class="flex items-center justify-center gap-3 mb-2 pb-2">
+        <img src="/images/logo_roomiohub.svg" alt="RoomioHub Logo" class="h-12 w-auto">
         <h1 class="text-4xl font-bold font-jakarta text-primary">RoomioHub</h1>
       </div>
-      <p class="text-neutral-dark/70 font-medium text-sm">Gestiona más. Preocúpate menos.</p>
+      <p class="text-neutral-dark/70 font-medium text-md pb-5">Gestiona más. Preocúpate menos.</p>
     </div>
 
     <!-- Formulario Normal -->
     @if (!showChangePasswordModal()) {
-      <form class="max-w-sm w-full space-y-6" (ngSubmit)="onLogin()">
+      <form class="max-w-md w-full space-y-6" (ngSubmit)="onLogin()">
         <div>
           <label for="username" class="block text-sm font-medium text-neutral-dark mb-1.5">Usuario</label>
-          <input type="text" id="username" name="username" [ngModel]="username()" (ngModelChange)="username.set($event)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Ej. LOSOLIVOS" />
+          <input type="text" id="username" name="username" [ngModel]="username()" (ngModelChange)="username.set($event)" class="w-full px-4 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Ej. LOSOLIVOS" />
         </div>
         <div>
           <label for="password" class="block text-sm font-medium text-neutral-dark mb-1.5">Contraseña</label>
-          <input type="password" id="password" name="password" [ngModel]="password()" (ngModelChange)="password.set($event)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="••••••••" />
+          <input type="password" id="password" name="password" [ngModel]="password()" (ngModelChange)="password.set($event)" class="w-full px-4 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="••••••••" />
         </div>
         
-        <button [disabled]="isLoading()" type="submit" class="flex justify-center items-center w-full bg-primary text-white font-medium py-3 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-4 disabled:opacity-75 disabled:cursor-not-allowed">
+        <button [disabled]="isLoading()" type="submit" class="flex justify-center items-center w-full bg-primary text-white font-medium py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-10 disabled:opacity-75 disabled:cursor-not-allowed">
           @if (isLoading()) {
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -37,7 +37,7 @@
 
     <!-- Formulario Cambio de Contraseña -->
     @if (showChangePasswordModal()) {
-      <form class="max-w-sm w-full space-y-6" (ngSubmit)="onChangePassword()">
+      <form class="max-w-md w-full space-y-6" (ngSubmit)="onChangePassword()">
         <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 mb-6">
           <p class="text-sm text-amber-800 font-medium text-center">Por seguridad interina, debes establecer una nueva contraseña antes de continuar.</p>
         </div>
@@ -70,10 +70,16 @@
   </div>
 
   <!-- Lado Derecho (Cover) -->
-  <div class="hidden lg:flex w-1/2 bg-primary relative items-center justify-center overflow-hidden">
+  <div class="hidden lg:flex w-3/5 bg-primary relative items-center justify-center overflow-hidden">
+    <!-- Imagen de Fondo -->
+    <img src="/images/login.webp" alt="RoomioHub Cover" class="absolute inset-0 w-full h-full object-cover">
+    
+    <!-- Capa de superposición para que no pierda la esencia de marca -->
+    <div class="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>
+
     <!-- Círculos decorativos abstractos de fondo -->
-    <div class="absolute w-96 h-96 bg-white/5 rounded-full -top-20 -right-20 blur-3xl"></div>
-    <div class="absolute w-125 h-125 bg-tertiary/20 rounded-full -bottom-32 -left-32 blur-3xl"></div>
+    <div class="absolute w-96 h-96 bg-white/10 rounded-full -top-20 -right-20 blur-3xl"></div>
+    <div class="absolute w-125 h-125 bg-tertiary/30 rounded-full -bottom-32 -left-32 blur-3xl"></div>
   </div>
 
 </div>

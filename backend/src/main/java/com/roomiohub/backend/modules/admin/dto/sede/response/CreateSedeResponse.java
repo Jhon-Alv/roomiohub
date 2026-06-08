@@ -1,4 +1,4 @@
-package com.roomiohub.backend.modules.admin.dto.response;
+package com.roomiohub.backend.modules.admin.dto.sede.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

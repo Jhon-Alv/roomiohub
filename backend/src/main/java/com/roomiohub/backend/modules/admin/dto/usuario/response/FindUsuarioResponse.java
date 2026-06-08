@@ -1,5 +1,6 @@
-package com.roomiohub.backend.modules.admin.dto.response;
+package com.roomiohub.backend.modules.admin.dto.usuario.response;
 
+import com.roomiohub.backend.security.identity.model.RolUsuario;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +12,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FindSedeResponse {
+public class FindUsuarioResponse {
+
     private UUID id;
     private String nombre;
-    private String direccion;
-    private Boolean activo;
+    private String username;
+    private RolUsuario rol;
+
 }

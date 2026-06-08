@@ -1,8 +1,8 @@
-package com.roomiohub.backend.modules.admin.service;
+package com.roomiohub.backend.modules.admin.service.sede;
 
-import com.roomiohub.backend.modules.admin.dto.request.ChangeSedeStatusRequest;
-import com.roomiohub.backend.modules.admin.model.SedeEntity;
-import com.roomiohub.backend.modules.admin.repository.SedeRepository;
+import com.roomiohub.backend.modules.admin.dto.sede.request.ChangeSedeStatusRequest;
+import com.roomiohub.backend.security.identity.model.SedeEntity;
+import com.roomiohub.backend.security.identity.repository.SedeRepository;
 import com.roomiohub.backend.shared.exceptions.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

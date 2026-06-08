@@ -5,18 +5,21 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { LoginResponse } from '../../../../shared/models/auth.models';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { SedeService } from '../../../gateway/services/sede.service';
+import { SedeStateService } from '../../../../core/services/sede-state.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private notificationService = inject(NotificationService);
+  private sedeService = inject(SedeService);
+  private sedeState = inject(SedeStateService);
 
   // Form states
   username = signal('');
@@ -41,12 +44,28 @@ export class LoginComponent {
       password: this.password() 
     }).subscribe({
       next: (response: LoginResponse) => {
-        this.isLoading.set(false);
         if (response.flagCambiarPassword) {
+          this.isLoading.set(false);
           this.tempToken.set(response.token); 
           this.showChangePasswordModal.set(true);
         } else {
-          this.router.navigate(['/gateway']);
+          if (response.sedeId) {
+            this.sedeService.getSedeById(response.sedeId).subscribe({
+              next: (sede) => {
+                this.sedeState.setSede(sede);
+                this.isLoading.set(false);
+                this.router.navigate(['/']);
+              },
+              error: () => {
+                this.isLoading.set(false);
+                this.notificationService.showError('Error al cargar la información de la sede');
+              }
+            });
+          } else {
+            this.sedeState.clearSede();
+            this.isLoading.set(false);
+            this.router.navigate(['/gateway']);
+          }
         }
       },
       error: () => {

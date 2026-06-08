@@ -8,8 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-main-layout',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.css']
+  templateUrl: './main-layout.component.html'
 })
 export class MainLayoutComponent {
   private sedeState = inject(SedeStateService);
@@ -31,6 +30,10 @@ export class MainLayoutComponent {
     return rol === 'ROLE_ADMIN' || rol === 'ADMIN';
   });
 
+  canChangeSede = computed(() => {
+    return !this.currentUser()?.sedeId;
+  });
+
   hasReceptionRole = computed(() => {
     const rol = this.currentUser()?.rol;
     return rol === 'ROLE_RECEPCION' || rol === 'RECEPCION' || this.hasAdminRole();
@@ -41,8 +44,14 @@ export class MainLayoutComponent {
     return rol === 'ROLE_LIMPIEZA' || rol === 'LIMPIEZA' || this.hasReceptionRole() || this.hasAdminRole();
   });
 
+  isAdminMenuOpen = signal(false);
+
   toggleConfigMenu() {
     this.isConfigOpen.set(!this.isConfigOpen());
+  }
+
+  toggleAdminMenu() {
+    this.isAdminMenuOpen.set(!this.isAdminMenuOpen());
   }
 
   logout() {

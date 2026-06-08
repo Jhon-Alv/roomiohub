@@ -23,6 +23,10 @@ export const routes: Routes = [
         redirectTo: 'dashboard',
         pathMatch: 'full'
       },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/users/pages/user-management/user-management.component').then(m => m.UserManagementComponent)
+      },
       // Ejemplos de Lazy Loading por Feature (requerirán sus propios archivos .routes.ts o cargar componentes directamente)
       /*
       {

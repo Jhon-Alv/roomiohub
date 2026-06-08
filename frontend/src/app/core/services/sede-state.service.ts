@@ -7,7 +7,6 @@ import { SedeDto } from '../../shared/models/sede.dto';
 export class SedeStateService {
   private readonly STORAGE_KEY = 'roomiohub_active_sede';
   
-  // Signal to hold the currently selected Sede
   activeSede = signal<SedeDto | null>(null);
 
   constructor() {

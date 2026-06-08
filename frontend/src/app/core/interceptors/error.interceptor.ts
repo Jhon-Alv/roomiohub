@@ -4,6 +4,49 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../services/notification.service';
 
+const HTTP_ERROR_TITLES_ES: Record<string, string> = {
+  'Bad Request': 'Solicitud Incorrecta',
+  'Unauthorized': 'No Autorizado',
+  'Forbidden': 'Acceso Denegado',
+  'Not Found': 'No Encontrado',
+  'Method Not Allowed': 'Método no Permitido',
+  'Not Acceptable': 'No Aceptable',
+  'Request Timeout': 'Tiempo de Espera Agotado',
+  'Conflict': 'Conflicto de Datos',
+  'Gone': 'Ya no Existe',
+  'Length Required': 'Longitud Requerida',
+  'Precondition Failed': 'Precondición Fallida',
+  'Payload Too Large': 'Carga Útil Demasiado Grande',
+  'URI Too Long': 'URI Demasiado Larga',
+  'Unsupported Media Type': 'Tipo de Medio no Soportado',
+  'Range Not Satisfiable': 'Rango no Satisfacible',
+  'Expectation Failed': 'Expectativa Fallida',
+  'Im a teapot': 'Soy una Tetera',
+  'Misdirected Request': 'Solicitud Redirigida Incorrectamente',
+  'Unprocessable Entity': 'Error de Procesamiento',
+  'Unprocessable Content': 'Error de Procesamiento',
+  'Locked': 'Bloqueado',
+  'Failed Dependency': 'Dependencia Fallida',
+  'Too Early': 'Demasiado Pronto',
+  'Upgrade Required': 'Actualización Requerida',
+  'Precondition Required': 'Precondición Requerida',
+  'Too Many Requests': 'Demasiadas Solicitudes',
+  'Request Header Fields Too Large': 'Campos de Encabezado Demasiado Grandes',
+  'Unavailable For Legal Reasons': 'No Disponible por Razones Legales',
+  'Internal Server Error': 'Error Interno del Servidor',
+  'Not Implemented': 'No Implementado',
+  'Bad Gateway': 'Puerta de Enlace Incorrecta',
+  'Service Unavailable': 'Servicio no Disponible',
+  'Gateway Timeout': 'Tiempo de Espera de la Puerta de Enlace Agotado',
+  'HTTP Version Not Supported': 'Versión de HTTP no Soportada',
+  'Variant Also Negotiates': 'Variante También Negocia',
+  'Insufficient Storage': 'Almacenamiento Insuficiente',
+  'Loop Detected': 'Bucle Detectado',
+  'Not Extended': 'No Extendido',
+  'Network Authentication Required': 'Autenticación de Red Requerida'
+};
+
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationService = inject(NotificationService);
 
@@ -52,6 +95,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             }
             break;
         }
+      }
+
+      if (HTTP_ERROR_TITLES_ES[errorTitle]) {
+        errorTitle = HTTP_ERROR_TITLES_ES[errorTitle];
       }
 
       notificationService.showError(errorMessage, errorTitle);

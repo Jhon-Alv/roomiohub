@@ -30,6 +30,9 @@ public class UsuarioEntity extends TenantBaseEntity implements UserDetails {
     @Column(name = "sede_id")
     private UUID sedeId;
 
+    @Column(name = "nombre", nullable = false, length = 150)
+    private String nombre;
+
     @Column(name = "username", nullable = false, unique = true, length = 100)
     private String username;
 

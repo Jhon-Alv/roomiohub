@@ -1,0 +1,258 @@
+<div class="p-container-padding max-w-7xl mx-auto space-y-6">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h2 class="font-h1 text-h1 text-primary">Gestión de Usuarios</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-1">Administre el acceso del personal y los roles del sistema.</p>
+    </div>
+    <button (click)="openCreateModal()" class="bg-[#0a2463] text-white px-5 py-2.5 rounded-lg font-label-md text-label-md hover:bg-[#0a2463]/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.1)] flex items-center gap-2 active:scale-95 duration-150">
+      <span class="material-symbols-outlined text-[20px]">add</span>
+      Añadir Nuevo Usuario
+    </button>
+  </div>
+
+  <div class="bg-surface rounded-xl border border-outline-variant shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
+    <!-- Filtros -->
+    <div class="p-4 border-b border-outline-variant bg-surface-container-lowest flex flex-wrap items-center gap-4">
+      <div class="relative flex-1 min-w-50">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline font-label-md">search</span>
+        <input 
+          [ngModel]="searchTerm()" 
+          (ngModelChange)="onSearchChange($event)"
+          class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" 
+          placeholder="Buscar por nombre o username..." 
+          type="text">
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-44">
+          <app-custom-select 
+            [options]="rolFilterOptions" 
+            size="sm"
+            [ngModel]="selectedRol()" 
+            (ngModelChange)="selectedRol.set($event); onFilterChange()">
+          </app-custom-select>
+        </div>
+        <div class="w-44">
+          <app-custom-select 
+            [options]="estadoFilterOptions" 
+            size="sm"
+            [ngModel]="selectedEstado()" 
+            (ngModelChange)="selectedEstado.set($event); onFilterChange()">
+          </app-custom-select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto relative">
+      @if (isLoading()) {
+        <div class="absolute inset-0 bg-surface/50 backdrop-blur-sm flex items-center justify-center z-10">
+          <div class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+
+      <table class="w-full text-left border-collapse table-fixed">
+        <thead>
+          <tr class="bg-surface-container-low border-b border-outline-variant">
+            <th class="w-1/3 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Nombre</th>
+            <th class="w-1/4 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Username</th>
+            <th class="w-40 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Rol</th>
+            <th class="w-32 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Estado</th>
+            <th class="w-24 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant bg-surface">
+          @for (user of usuarios(); track user.id) {
+            <tr class="hover:bg-surface-container-lowest transition-colors group">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center text-primary font-label-md text-label-md" [class.opacity-50]="!user.activo">
+                    {{ getInitials(user.nombre) }}
+                  </div>
+                  <span class="font-label-md text-label-md text-on-surface" [class.opacity-70]="!user.activo">{{ user.nombre }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant" [class.opacity-70]="!user.activo">{{ user.username }}</td>
+              <td class="px-6 py-4" [class.opacity-70]="!user.activo">
+                @if (user.rol === 'ADMIN') {
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-surface-variant text-primary border border-primary/20">Administrador</span>
+                } @else if (user.rol === 'RECEPCION') {
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-inverse-primary text-primary-container border border-inverse-primary/50">Recepcionista</span>
+                } @else {
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed border border-secondary-fixed/50">Limpieza</span>
+                }
+              </td>
+              <td class="px-6 py-4">
+                @if (user.activo) {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-surface-container-highest text-on-surface">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                    Activo
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container border border-error/50">
+                    <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                    Inactivo
+                  </span>
+                }
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2 transition-opacity">
+                  <button (click)="openEditModal(user)" class="w-8 h-8 flex items-center justify-center text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low" title="Editar">
+                    <span class="material-symbols-outlined text-[20px] leading-none">edit</span>
+                  </button>
+                  <button (click)="toggleStatus(user)" class="w-8 h-8 flex items-center justify-center text-outline transition-colors rounded-full" 
+                    [ngClass]="user.activo ? 'hover:text-error hover:bg-error-container' : 'hover:text-primary hover:bg-surface-container-low'"
+                    [title]="user.activo ? 'Desactivar' : 'Activar'">
+                    <span class="material-symbols-outlined text-[20px] leading-none">{{ user.activo ? 'delete' : 'restore' }}</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="px-6 py-8 text-center text-on-surface-variant font-body-sm">
+                No se encontraron usuarios con los filtros actuales.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación (Hardcoded temporalmente según petición) -->
+    <div class="p-4 border-t border-outline-variant flex items-center justify-between bg-surface-container-lowest">
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Mostrando {{usuarios().length}} usuarios</span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Crear/Editar Usuario -->
+@if (isModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" (click)="closeModal()"></div>
+    
+    <!-- Modal Panel -->
+    <div class="relative bg-surface rounded-2xl w-full max-w-md shadow-lg flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between sticky top-0 bg-surface rounded-t-2xl z-10">
+        <h3 class="font-h2 text-h2 text-on-surface">
+          @if (createdCredentials()) {
+            Usuario Creado Exitosamente
+          } @else {
+            {{ modalMode() === 'create' ? 'Crear Nuevo Usuario' : 'Editar Usuario' }}
+          }
+        </h3>
+        <button (click)="closeModal()" class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar">
+        @if (createdCredentials()) {
+          <!-- Credenciales Creadas View -->
+          <div class="flex flex-col items-center justify-center text-center space-y-4 py-4">
+            <div class="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-2">
+              <span class="material-symbols-outlined text-[32px]">check_circle</span>
+            </div>
+            <p class="font-body-md text-body-md text-on-surface">
+              El usuario ha sido registrado en el sistema. Por favor, copie y entregue las siguientes credenciales:
+            </p>
+            
+            <div class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-4 mt-4 text-left space-y-3">
+              <div>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">Usuario</span>
+                <p class="font-body-lg text-body-lg text-on-surface font-medium">{{ createdCredentials()!.username }}</p>
+              </div>
+              <div>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">Contraseña Temporal</span>
+                <p class="font-body-lg text-body-lg text-on-surface font-medium tracking-wide">{{ createdCredentials()!.password }}</p>
+              </div>
+            </div>
+
+            <button type="button" (click)="copyCredentials()" class="w-full mt-4 bg-secondary-container text-on-secondary-container px-5 py-3 rounded-lg font-label-md text-label-md hover:bg-secondary-container/80 transition-colors flex items-center justify-center gap-2 active:scale-95 duration-150 border border-secondary-container-dim">
+              <span class="material-symbols-outlined text-[20px]">content_copy</span>
+              Copiar Credenciales
+            </button>
+          </div>
+        } @else {
+          <!-- Formulario -->
+          <form (ngSubmit)="saveUsuario()" class="space-y-4">
+            <!-- Nombre -->
+            <div class="space-y-1.5">
+              <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                Nombre Completo <span class="text-error">*</span>
+              </label>
+              <input type="text" [(ngModel)]="usuarioForm().nombre" name="nombre" required
+                class="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline/50"
+                placeholder="Ej. Juan Pérez">
+            </div>
+
+            <!-- Username -->
+            <div class="space-y-1.5">
+              <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                Nombre de Usuario (Login) <span class="text-error">*</span>
+              </label>
+              <input type="text" [(ngModel)]="usuarioForm().username" name="username" required
+                class="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline/50"
+                placeholder="Ej. jperez">
+            </div>
+
+            <!-- Rol -->
+            <div class="space-y-1.5">
+              <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                Rol del Sistema <span class="text-error">*</span>
+              </label>
+              <app-custom-select 
+                [options]="rolFormOptions" 
+                [(ngModel)]="usuarioForm().rol" 
+                name="rol">
+              </app-custom-select>
+            </div>
+
+            @if (modalMode() === 'edit') {
+              <div class="space-y-1.5">
+                <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                  Nueva Contraseña <span class="font-body-xs text-outline">(opcional)</span>
+                </label>
+                <input type="password" [(ngModel)]="usuarioForm().password" name="password"
+                  class="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline/50"
+                  placeholder="Dejar en blanco para no cambiar">
+              </div>
+            }
+
+            @if (modalMode() === 'create') {
+              <div class="bg-surface-variant/30 rounded-lg p-4 mt-2">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary text-[20px] mt-0.5">info</span>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Al crear el usuario, el sistema generará automáticamente una contraseña temporal segura que deberás compartir con el empleado.
+                  </p>
+                </div>
+              </div>
+            }
+          </form>
+        }
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-lowest rounded-b-2xl flex justify-end gap-3 sticky bottom-0 z-10">
+        @if (createdCredentials()) {
+          <button type="button" (click)="closeModal()" class="bg-[#0a2463] text-white px-5 py-2.5 rounded-lg font-label-md text-label-md hover:bg-[#0a2463]/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.1)] active:scale-95 duration-150 w-full sm:w-auto">
+            Cerrar
+          </button>
+        } @else {
+          <button type="button" (click)="closeModal()" class="px-5 py-2.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-colors active:scale-95 duration-150">
+            Cancelar
+          </button>
+          <button type="button" (click)="saveUsuario()" [disabled]="isSaving()" class="bg-[#0a2463] text-white px-5 py-2.5 rounded-lg font-label-md text-label-md hover:bg-[#0a2463]/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.1)] active:scale-95 duration-150 disabled:opacity-50 flex items-center gap-2">
+            @if (isSaving()) {
+              <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            }
+            {{ modalMode() === 'create' ? 'Crear Usuario' : 'Guardar Cambios' }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}

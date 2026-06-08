@@ -11,8 +11,7 @@ import { Router } from '@angular/router';
   selector: 'app-sede-selector',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './sede-selector.component.html',
-  styleUrls: ['./sede-selector.component.css']
+  templateUrl: './sede-selector.component.html'
 })
 export class SedeSelectorComponent implements OnInit {
   private sedeService = inject(SedeService);

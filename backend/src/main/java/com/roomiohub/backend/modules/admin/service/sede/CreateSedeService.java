@@ -1,10 +1,10 @@
-package com.roomiohub.backend.modules.admin.service;
+package com.roomiohub.backend.modules.admin.service.sede;
 
-import com.roomiohub.backend.modules.admin.dto.request.CreateSedeRequest;
-import com.roomiohub.backend.modules.admin.dto.response.CreateSedeResponse;
+import com.roomiohub.backend.modules.admin.dto.sede.request.CreateSedeRequest;
+import com.roomiohub.backend.modules.admin.dto.sede.response.CreateSedeResponse;
 import com.roomiohub.backend.modules.admin.mapper.SedeMapper;
-import com.roomiohub.backend.modules.admin.model.SedeEntity;
-import com.roomiohub.backend.modules.admin.repository.SedeRepository;
+import com.roomiohub.backend.security.identity.model.SedeEntity;
+import com.roomiohub.backend.security.identity.repository.SedeRepository;
 import com.roomiohub.backend.modules.admin.validation.CreateSedeValidationService;
 import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import lombok.RequiredArgsConstructor;

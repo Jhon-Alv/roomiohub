@@ -60,6 +60,7 @@ CREATE TABLE USUARIOS
     ID                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     TENANT_ID             UUID         NOT NULL REFERENCES CUENTAS (ID),
     SEDE_ID               UUID                  REFERENCES SEDES (ID),
+    NOMBRE                VARCHAR(150) NOT NULL,
     USERNAME              VARCHAR(100) NOT NULL,
     PASSWORD              VARCHAR(255) NOT NULL,
     ROL                   ROL_USUARIO  NOT NULL,

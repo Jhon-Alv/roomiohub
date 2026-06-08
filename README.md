@@ -6,14 +6,14 @@
 
 ## 📁 Estructura del Monorepo
 
-El proyecto está organizado en un monorepo para facilitar la gestión tanto del backend como del futuro frontend:
+El proyecto está organizado en un monorepo para facilitar la gestión tanto del backend como del frontend:
 
 ```text
 RoomioHub/
 ├── backend/                # Backend en Spring Boot 4.0.6 (Java 21 + Gradle)
-├── frontend/               # (Futuro) Frontend en Angular (Versión por definir)
-├── .env.example            # Plantilla de configuración de variables de entorno
-├── .env                    # Configuración de entorno local (ignorado en Git)
+│   ├── .env.example        # Plantilla de configuración de entorno del backend
+│   └── .env                # Variables de entorno locales del backend (ignorado en Git)
+├── frontend/               # Frontend en Angular 19+ (Tailwind CSS v4)
 └── init.sql                # Script DDL de inicialización de la base de datos (PostgreSQL 16)
 ```
 
@@ -34,57 +34,84 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente en tu máquina de 
 
 Sigue estos pasos en orden para levantar el entorno de desarrollo localmente:
 
-### 1. Configurar las Variables de Entorno
-Copia el archivo de plantilla `.env.example` y crea el archivo `.env` en la raíz del proyecto:
+### 1. Configurar las Variables de Entorno del Backend
+Cada componente gestiona sus propias configuraciones locales. Dirígete a la carpeta `backend/` y crea su archivo `.env`:
 
 **En Windows (PowerShell):**
 ```powershell
+cd backend
 copy .env.example .env
 ```
 
 **En Linux / macOS:**
 ```bash
+cd backend
 cp .env.example .env
 ```
 
-Abre el archivo `.env` recién creado y reemplaza los valores de marcador de posición (`tu_usuario`, `tu_password_seguro`, y `JWT_SECRET_KEY`) con tus credenciales de desarrollo.
+Abre `backend/.env` y personaliza sus valores.
+
+#### ⚠️ Resolución de Conflictos de Puerto de Base de Datos
+Si ya tienes una instancia de PostgreSQL ejecutándose nativamente en tu máquina en el puerto por defecto (`5432`), el contenedor de Docker Compose no podrá enlazarse a dicho puerto.
+Para solucionarlo:
+1. En `backend/.env`, cambia `POSTGRES_PORT` a `5433`:
+   ```env
+   POSTGRES_PORT=5433
+   ```
+2. Modifica la URL de conexión del datasource (`BD_ROOMIOHUB_URL`) para que apunte al puerto `5433`:
+   ```env
+   BD_ROOMIOHUB_URL=jdbc:postgresql://localhost:5433/roomiohub_db?timezone=America/Lima
+   ```
+
+*(Si no tienes PostgreSQL corriendo localmente, puedes mantener el puerto por defecto `5432`)*.
+
+---
 
 ### 2. Levantar la Base de Datos con Docker
-El backend contiene la configuración de Docker Compose que levanta PostgreSQL 16 y mapea las variables de entorno de tu archivo `.env`.
+El archivo `docker-compose.yaml` está configurado para leer directamente las variables de entorno de tu archivo `backend/.env` local.
 
-Dirígete a la carpeta del backend y levanta el contenedor:
+Dirígete a la carpeta del backend (si no estás ahí) y levanta el contenedor:
 
 ```bash
 cd backend
 docker compose up -d
 ```
-> **Nota:** Esto iniciará la base de datos PostgreSQL en el puerto especificado en tu archivo `.env` (por defecto `5432`).
+> **Nota:** Esto iniciará el contenedor de PostgreSQL en segundo plano y expondrá la base de datos en el puerto indicado en tu `POSTGRES_PORT` (por defecto `5432` o `5433` si lo modificaste).
+
+---
 
 ### 3. Inicializar el Esquema de la Base de Datos
-El proyecto utiliza un enfoque de migración manual (`ddl-auto: none`) para mantener control absoluto sobre el esquema. Por ende, debes inicializar la estructura de la base de datos manualmente ejecutando el archivo `init.sql` ubicado en la raíz del monorepo.
+El proyecto utiliza un enfoque de migración manual (`ddl-auto: none`) para mantener control absoluto sobre el esquema. Debes inicializar la estructura de la base de datos ejecutando el archivo `init.sql` ubicado en la raíz del monorepo.
 
-Puedes hacerlo de dos formas:
-* **Opción A (Recomendado):** Conéctate a la base de datos usando tu cliente SQL favorito (DBeaver, pgAdmin, etc.) con las credenciales que configuraste en tu `.env`, y ejecuta el script completo `init.sql`.
-* **Opción B (Línea de comandos):** Si tienes el comando `psql` instalado localmente, puedes ejecutar:
+* **Opción A (Recomendado):** Conéctate a la base de datos usando tu cliente SQL favorito (DBeaver, pgAdmin, etc.) utilizando `localhost`, el puerto configurado en tu `.env` (`5432` o `5433`) y tus credenciales, y ejecuta el script `init.sql`.
+* **Opción B (Línea de comandos):** Si tienes `psql` instalado localmente, puedes ejecutar:
   ```bash
-  psql -h localhost -U <tu_usuario> -d roomiohub_db -f ../init.sql
+  # Desde la carpeta backend/
+  psql -h localhost -p <puerto> -U <tu_usuario> -d roomiohub_db -f ../init.sql
   ```
-  *(Reemplaza `<tu_usuario>` con el valor de `POSTGRES_USER` en tu `.env`)*
+  *(Reemplaza `<puerto>` y `<tu_usuario>` con los valores correspondientes de tu `.env`)*
 
-### 4. Ejecutar el Backend
-Una vez que la base de datos esté levantada y el esquema inicializado, puedes iniciar el servidor de desarrollo del backend:
+---
 
-**En Windows (PowerShell / CMD):**
-```powershell
-./gradlew.bat bootRun
-```
+### 4. Ejecutar el Backend desde el IDE (Recomendado: IntelliJ IDEA)
 
-**En Linux / macOS:**
-```bash
-./gradlew bootRun
-```
+Para asegurar que las credenciales no se utilicen con valores por defecto débiles en desarrollo ni en producción, **se han removido los valores de fallback de la configuración**. El backend requiere obligatoriamente que configures tu archivo `.env` en la carpeta `backend/` para iniciarse.
 
-El backend se iniciará y estará escuchando por defecto en el puerto `8080` (o el puerto configurado en `backend/src/main/resources/application.yaml`).
+Dado que en desarrollo es común ejecutar el backend directamente desde el IDE, sigue estos pasos para configurar la carga del archivo `.env` en **IntelliJ IDEA**:
+
+1. Abre el proyecto en **IntelliJ IDEA**.
+2. Ve a la parte superior derecha y haz clic en el menú desplegable junto al botón verde de "Run" (Reproducir) y selecciona **Edit Configurations...**.
+3. Selecciona la configuración de ejecución de Spring Boot de tu proyecto (usualmente llamada `BackendApplication` o similar).
+4. Configura la carga del `.env`:
+   * **Opción A (Nativo - Recomendado)**: En las versiones recientes de IntelliJ IDEA, puedes cargar un archivo `.env` directamente sin usar plugins:
+     * Ve al campo **Environment variables** y haz clic en el icono de edición (el lápiz/cuadrado a la derecha) para abrir la ventana de variables.
+     * En la sección inferior llamada **Env files** (o mediante la carpeta de archivos), haz clic en el botón `+` (Add) y selecciona el archivo `backend/.env` que creaste.
+     * Guarda y confirma para que el IDE lea las variables del archivo automáticamente.
+   * **Opción B (Entrada Manual)**: Si prefieres no usar la opción de archivo o tienes una versión muy antigua:
+     * En el campo **Environment variables**, escribe o pega tus variables en formato `KEY=VALUE` (separadas por punto y coma `;`).
+5. Aplica los cambios y ejecuta la aplicación haciendo clic en el botón de **Run** (Reproducir).
+
+El backend iniciará correctamente y escuchará peticiones en el puerto `8080`.
 
 ---
 

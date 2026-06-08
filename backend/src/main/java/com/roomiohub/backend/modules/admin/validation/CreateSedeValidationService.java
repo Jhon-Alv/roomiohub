@@ -1,6 +1,6 @@
 package com.roomiohub.backend.modules.admin.validation;
 
-import com.roomiohub.backend.modules.admin.repository.SedeRepository;
+import com.roomiohub.backend.security.identity.repository.SedeRepository;
 import com.roomiohub.backend.security.identity.model.CuentaEntity;
 import com.roomiohub.backend.security.identity.repository.CuentaRepository;
 import com.roomiohub.backend.shared.exceptions.RestException;

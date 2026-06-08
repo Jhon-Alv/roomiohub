@@ -1,6 +1,6 @@
-package com.roomiohub.backend.modules.admin.repository;
+package com.roomiohub.backend.security.identity.repository;
 
-import com.roomiohub.backend.modules.admin.model.SedeEntity;
+import com.roomiohub.backend.security.identity.model.SedeEntity;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

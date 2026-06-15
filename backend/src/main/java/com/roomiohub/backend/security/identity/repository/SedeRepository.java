@@ -16,9 +16,10 @@ public interface SedeRepository extends BaseJpaRepository<SedeEntity, UUID> {
     @Query("SELECT s FROM SedeEntity s")
     List<SedeEntity> findAllSedes();
 
-    @Query("SELECT s FROM SedeEntity s WHERE s.id = :id")
-    Optional<SedeEntity> findById(@Param("id") UUID id);
+    Optional<SedeEntity> findByIdAndTenantId(UUID id, UUID tenantId);
 
     @Query("SELECT COUNT(s) FROM SedeEntity s")
     long countSedes();
+
+    Boolean existsByNombreAndTenantId(String nombre, UUID tenantId);
 }

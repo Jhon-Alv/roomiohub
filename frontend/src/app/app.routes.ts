@@ -28,6 +28,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/users/pages/user-management/user-management.component').then(m => m.UserManagementComponent)
       },
       // Ejemplos de Lazy Loading por Feature (requerirán sus propios archivos .routes.ts o cargar componentes directamente)
+      {
+        path: 'master',
+        loadChildren: () => import('./features/master/master.routes').then(m => m.masterRoutes)
+      },
       /*
       {
         path: 'dashboard',
@@ -40,14 +44,6 @@ export const routes: Routes = [
       {
         path: 'logistics',
         loadChildren: () => import('./features/logistics/logistics.routes').then(m => m.LOGISTICS_ROUTES)
-      },
-      {
-        path: 'catalog',
-        loadChildren: () => import('./features/catalog/catalog.routes').then(m => m.CATALOG_ROUTES)
-      },
-      {
-        path: 'users',
-        loadChildren: () => import('./features/users/users.routes').then(m => m.USERS_ROUTES)
       }
       */
     ]

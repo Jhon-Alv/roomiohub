@@ -21,7 +21,7 @@ public class CreateSedeService {
 
     private final SedeRepository sedeRepository;
     private final SedeMapper sedeMapper;
-    private final CreateSedeValidationService createSedeValidationService;
+    private final CreateSedeValidationService validationService;
 
     @Transactional
     public CreateSedeResponse execute(CreateSedeRequest request) {
@@ -30,10 +30,11 @@ public class CreateSedeService {
 
         UUID tenantId = TenantContextHolder.getRequiredTenantId();
 
-        createSedeValidationService.validate(tenantId);
-
         SedeEntity sede = sedeMapper.toEntity(request);
         sede.setTenantId(tenantId);
+
+        validationService.validate(sede);
+
         SedeEntity sedeGuardado = sedeRepository.persist(sede);
 
         log.info("Sede creada exitosamente con id: {}", sede.getId());

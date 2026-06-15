@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ElementRef, HostListener, signal } from '@angular/core';
+import { Component, Input, forwardRef, ElementRef, HostListener, signal, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -27,7 +27,7 @@ export interface SelectOption {
         (click)="toggleDropdown()"
         class="w-full flex items-center justify-between bg-surface border border-outline-variant rounded-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer disabled:cursor-not-allowed"
         [ngClass]="size === 'sm' ? 'px-3 py-2 font-body-sm text-body-sm' : 'px-4 py-2.5 font-body-md text-body-md'">
-        <span class="truncate">{{ selectedLabel || placeholder }}</span>
+        <span class="truncate">{{ getDisplayText() }}</span>
         <span class="material-symbols-outlined text-outline transition-transform duration-200" [ngClass]="size === 'sm' ? 'text-[18px]' : 'text-[20px]'" [class.rotate-180]="isOpen()">expand_more</span>
       </button>
 
@@ -64,11 +64,16 @@ export class CustomSelectComponent implements ControlValueAccessor {
   disabled: boolean = false;
   isOpen = signal(false);
 
+  private cdr = inject(ChangeDetectorRef);
+
   constructor(private elementRef: ElementRef) {}
 
-  get selectedLabel(): string {
+  getDisplayText(): string {
+    if (this.value === null || this.value === undefined || this.value === '') {
+      return this.placeholder;
+    }
     const selected = this.options.find(opt => opt.value === this.value);
-    return selected ? selected.label : '';
+    return selected ? selected.label : this.placeholder;
   }
 
   // --- Control Value Accessor Implementation ---
@@ -77,6 +82,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
 
   writeValue(val: any): void {
     this.value = val;
+    this.cdr.detectChanges();
   }
 
   registerOnChange(fn: any): void {

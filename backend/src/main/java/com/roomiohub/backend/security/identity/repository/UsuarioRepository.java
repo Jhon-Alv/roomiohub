@@ -13,9 +13,13 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 @Repository
 public interface UsuarioRepository extends BaseJpaRepository<UsuarioEntity, UUID>, JpaSpecificationExecutor<UsuarioEntity> {
 
+    Optional<UsuarioEntity> findByIdAndTenantId(UUID id, UUID tenantId);
+
     Optional<UsuarioEntity> findByUsernameAndActivoTrue(String username);
 
-    boolean existsByUsername(String username);
+    Optional<UsuarioEntity> findByUsernameAndTenantIdAndActivoTrue(String username, UUID tenantId);
+
+    Boolean existsByUsernameAndTenantId(String username, UUID tenantId);
 
     List<UsuarioEntity> findAllBySedeId(UUID sedeId);
 

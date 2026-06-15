@@ -13,6 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequest {
 
+    @NotBlank(message = "El RUC de la empresa es obligatorio")
+    @Size(max = 20, message = "El RUC no puede exceder los 20 caracteres")
+    private String ruc;
+
     @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(max = 100, message = "El nombre de usuario no puede exceder los 100 caracteres")
     private String username;

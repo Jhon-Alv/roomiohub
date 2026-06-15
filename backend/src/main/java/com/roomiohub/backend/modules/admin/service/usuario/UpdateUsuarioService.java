@@ -4,6 +4,7 @@ import com.roomiohub.backend.modules.admin.dto.usuario.request.UpdateUsuarioRequ
 import com.roomiohub.backend.modules.admin.mapper.UsuarioMapper;
 import com.roomiohub.backend.security.identity.model.UsuarioEntity;
 import com.roomiohub.backend.security.identity.repository.UsuarioRepository;
+import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import com.roomiohub.backend.shared.exceptions.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +29,18 @@ public class UpdateUsuarioService {
 
         log.info("Iniciando proceso de actualización de usuario con ID: {}", id);
 
-        UsuarioEntity usuario = usuarioRepository.findById(id)
+        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+
+        UsuarioEntity usuario = usuarioRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Usuario no existe o no tiene acceso"));
 
-        if (request.getNuevaPassword() != null) {
+        if (!request.getNuevaPassword().isBlank()) {
             String encodedPassword = passwordEncoder.encode(request.getNuevaPassword());
             request.setNuevaPassword(encodedPassword);
+        }
+
+        if (!usuario.getUsername().equals(request.getUsername()) && usuarioRepository.existsByUsernameAndTenantId(request.getUsername(), tenantId)) {
+            throw new RestException(HttpStatus.CONFLICT, "Ya existe un usuario con ese username");
         }
 
         usuarioMapper.toUpdateUsuarioEntity(usuario, request);

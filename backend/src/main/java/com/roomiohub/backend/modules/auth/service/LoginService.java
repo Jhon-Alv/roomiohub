@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,6 @@ public class LoginService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UsuarioRepository usuarioRepository;
     private final AuthMapper authMapper;
 
 
@@ -30,10 +30,9 @@ public class LoginService {
 
         UsernamePasswordAuthenticationToken authToken = authMapper.toAuthToken(request);
 
-        authenticationManager.authenticate(authToken);
+        Authentication auth = authenticationManager.authenticate(authToken);
 
-        UsuarioEntity user = usuarioRepository.findByUsernameAndActivoTrue(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado o inactivo"));
+        UsuarioEntity user = (UsuarioEntity) auth.getPrincipal();
 
         String token = jwtService.generateToken(user);
 

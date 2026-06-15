@@ -11,4 +11,6 @@ public interface CuentaRepository extends BaseJpaRepository<CuentaEntity, UUID> 
 
     Boolean existsByRuc(String ruc);
 
+    java.util.Optional<CuentaEntity> findByRuc(String ruc);
+
 }

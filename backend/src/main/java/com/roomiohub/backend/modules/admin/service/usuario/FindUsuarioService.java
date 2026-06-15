@@ -4,6 +4,7 @@ import com.roomiohub.backend.modules.admin.dto.usuario.response.FindUsuarioRespo
 import com.roomiohub.backend.modules.admin.mapper.UsuarioMapper;
 import com.roomiohub.backend.security.identity.model.UsuarioEntity;
 import com.roomiohub.backend.security.identity.repository.UsuarioRepository;
+import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import com.roomiohub.backend.shared.exceptions.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,9 @@ public class FindUsuarioService {
 
         log.info("Obteniendo usuario con ID: {}", usuarioId);
 
-        UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
+        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+
+        UsuarioEntity usuario = usuarioRepository.findByIdAndTenantId(usuarioId, tenantId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Usuario no encontrado con ID: " + usuarioId));
 
         log.info("Usuario encontrado: {} - {}", usuario.getId(), usuario.getUsername());

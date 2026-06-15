@@ -4,6 +4,7 @@ import com.roomiohub.backend.modules.admin.dto.sede.request.UpdateSedeRequest;
 import com.roomiohub.backend.modules.admin.mapper.SedeMapper;
 import com.roomiohub.backend.security.identity.model.SedeEntity;
 import com.roomiohub.backend.security.identity.repository.SedeRepository;
+import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import com.roomiohub.backend.shared.exceptions.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,15 @@ public class UpdateSedeService {
 
         log.info("Actualizando la sede con id: {}", id);
 
-        SedeEntity sede = sedeRepository.findById(id)
+        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+
+        SedeEntity sede = sedeRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "La sede no existe o no tiene acceso."));
-        
+
+        if (!sede.getNombre().equals(request.getNombre()) && sedeRepository.existsByNombreAndTenantId(request.getNombre(), tenantId)) {
+            throw new RestException(HttpStatus.CONFLICT, "Ya existe una sede con ese nombre");
+        }
+
         sedeMapper.updateEntity(sede, request);
         sedeRepository.merge(sede);
 

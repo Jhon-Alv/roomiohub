@@ -1,6 +1,11 @@
 export interface LoginRequest {
+  ruc: string;
   username: string;
   password: string;
+}
+
+export interface VerifyRucResponse {
+  nombreComercial: string;
 }
 
 export interface LoginResponse {

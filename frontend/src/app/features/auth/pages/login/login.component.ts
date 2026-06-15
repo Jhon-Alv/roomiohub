@@ -22,6 +22,9 @@ export class LoginComponent {
   private sedeState = inject(SedeStateService);
 
   // Form states
+  step = signal<'RUC' | 'LOGIN'>('RUC');
+  ruc = signal('');
+  nombreComercial = signal('');
   username = signal('');
   password = signal('');
   
@@ -32,14 +35,40 @@ export class LoginComponent {
 
   isLoading = signal(false);
 
+  onVerifyRuc() {
+    const rucVal = this.ruc()?.trim() || '';
+    if (!rucVal) {
+      this.notificationService.showWarning('Por favor ingrese el RUC de su empresa');
+      return;
+    }
+
+    if (!/^\d{11}$/.test(rucVal)) {
+      this.notificationService.showWarning('El RUC debe contener exactamente 11 dígitos numéricos', 'Formato inválido');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.authService.verifyRuc(rucVal).subscribe({
+      next: (res) => {
+        this.nombreComercial.set(res.nombreComercial);
+        this.isLoading.set(false);
+        this.step.set('LOGIN');
+      },
+      error: () => {
+        this.isLoading.set(false);
+      }
+    });
+  }
+
   onLogin() {
-    if (!this.username() || !this.password()) {
-      this.notificationService.showWarning('Por favor ingrese usuario y contraseña');
+    if (!this.ruc() || !this.username() || !this.password()) {
+      this.notificationService.showWarning('Por favor ingrese todos los datos');
       return;
     }
 
     this.isLoading.set(true);
     this.authService.login({
+      ruc: this.ruc(),
       username: this.username(),
       password: this.password() 
     }).subscribe({

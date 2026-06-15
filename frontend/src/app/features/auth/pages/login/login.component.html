@@ -13,26 +13,52 @@
 
     <!-- Formulario Normal -->
     @if (!showChangePasswordModal()) {
-      <form class="max-w-md w-full space-y-6" (ngSubmit)="onLogin()">
-        <div>
-          <label for="username" class="block text-sm font-medium text-neutral-dark mb-1.5">Usuario</label>
-          <input type="text" id="username" name="username" [ngModel]="username()" (ngModelChange)="username.set($event)" class="w-full px-4 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Ej. LOSOLIVOS" />
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-neutral-dark mb-1.5">Contraseña</label>
-          <input type="password" id="password" name="password" [ngModel]="password()" (ngModelChange)="password.set($event)" class="w-full px-4 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="••••••••" />
-        </div>
-        
-        <button [disabled]="isLoading()" type="submit" class="flex justify-center items-center w-full bg-primary text-white font-medium py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-10 disabled:opacity-75 disabled:cursor-not-allowed">
-          @if (isLoading()) {
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          }
-          Ingresar a la plataforma
-        </button>
-      </form>
+      <!-- Paso 1: Ingresar RUC -->
+      @if (step() === 'RUC') {
+        <form class="max-w-md w-full space-y-6" (ngSubmit)="onVerifyRuc()">
+          <div>
+            <label for="ruc" class="block text-sm font-medium text-neutral-dark mb-1.5">RUC de la empresa</label>
+            <input type="text" id="ruc" name="ruc" maxlength="20" [ngModel]="ruc()" (ngModelChange)="ruc.set($event)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Ej. 20123456789" />
+          </div>
+          
+          <button type="submit" class="flex justify-center items-center w-full bg-primary text-white font-medium py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-10">
+            Continuar
+          </button>
+        </form>
+      }
+
+      <!-- Paso 2: Ingresar Usuario y Contraseña -->
+      @if (step() === 'LOGIN') {
+        <form class="max-w-md w-full space-y-6" (ngSubmit)="onLogin()">
+          <div class="flex items-center mb-6">
+            <button type="button" (click)="step.set('RUC')" class="text-sm text-primary font-medium flex items-center hover:underline">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              {{ nombreComercial() }}
+            </button>
+          </div>
+
+          <div>
+            <label for="username" class="block text-sm font-medium text-neutral-dark mb-1.5">Usuario</label>
+            <input type="text" id="username" name="username" [ngModel]="username()" (ngModelChange)="username.set($event)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Ej. PEPITO" />
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-neutral-dark mb-1.5">Contraseña</label>
+            <input type="password" id="password" name="password" [ngModel]="password()" (ngModelChange)="password.set($event)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="••••••••" />
+          </div>
+          
+          <button [disabled]="isLoading()" type="submit" class="flex justify-center items-center w-full bg-primary text-white font-medium py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm mt-10 disabled:opacity-75 disabled:cursor-not-allowed">
+            @if (isLoading()) {
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            }
+            Ingresar a la plataforma
+          </button>
+        </form>
+      }
     } 
 
     <!-- Formulario Cambio de Contraseña -->

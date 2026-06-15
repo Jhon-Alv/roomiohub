@@ -1,0 +1,158 @@
+<div class="p-container-padding max-w-7xl mx-auto space-y-6">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h2 class="font-h1 text-h1 text-primary">Habitaciones</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-1">Gestione las habitaciones y su disponibilidad.</p>
+    </div>
+    <button (click)="openCreateModal()" class="bg-[#0a2463] text-white px-5 py-2.5 rounded-lg font-label-md text-label-md hover:bg-[#0a2463]/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.1)] flex items-center gap-2 active:scale-95 duration-150">
+      <span class="material-symbols-outlined text-[20px]">add</span>
+      Nueva Habitación
+    </button>
+  </div>
+
+  <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-outline-variant bg-surface-container-lowest flex flex-wrap items-center gap-4">
+      <div class="relative flex-1 min-w-50">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline font-label-md">search</span>
+        <input 
+          [ngModel]="searchTerm()" 
+          (ngModelChange)="onSearchChange($event)"
+          class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" 
+          placeholder="Buscar habitación por número..." 
+          type="text">
+      </div>
+      <div class="w-44">
+        <app-custom-select 
+          [options]="estadoFilterOptions" 
+          size="sm"
+          [ngModel]="selectedEstado()" 
+          (ngModelChange)="selectedEstado.set($event); onFilterChange()">
+        </app-custom-select>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto relative min-h-[236px]">
+      @if (isLoading()) {
+        <div class="absolute inset-0 bg-surface/50 backdrop-blur-sm flex items-center justify-center z-10">
+          <div class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+
+      <table class="w-full text-left border-collapse table-fixed">
+        <thead>
+          <tr class="bg-surface-container-low border-b border-outline-variant">
+            <th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Número</th>
+            <th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Categoría</th>
+            <th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Piso</th>
+            <th class="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Estado Actual</th>
+            <th class="w-32 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-center">Activo</th>
+            <th class="w-28 px-6 py-3 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant bg-surface">
+          @for (item of habitaciones(); track item.id) {
+            <tr class="hover:bg-surface-container-lowest transition-colors group">
+              <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant font-bold">{{ item.numero }}</td>
+              <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">{{ item.categoriaNombre }}</td>
+              <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">{{ item.pisoNombre }}</td>
+              <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">
+                <span class="px-2 py-1 bg-surface-container rounded-md">{{ item.estadoActual }}</span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                @if (item.activo) {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-surface-container-highest text-on-surface"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>Activo</span>
+                } @else {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container border border-error/50"><span class="w-1.5 h-1.5 rounded-full bg-error"></span>Inactivo</span>
+                }
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2 transition-opacity">
+                  <button (click)="openEditModal(item)" class="w-8 h-8 shrink-0 flex items-center justify-center text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low" title="Editar">
+                    <span class="material-symbols-outlined text-[20px] leading-none">edit</span>
+                  </button>
+                  <button (click)="toggleStatus(item)" class="w-8 h-8 shrink-0 flex items-center justify-center text-outline transition-colors rounded-full" 
+                    [ngClass]="item.activo ? 'hover:text-error hover:bg-error-container' : 'hover:text-primary hover:bg-surface-container-low'"
+                    [title]="item.activo ? 'Desactivar' : 'Activar'">
+                    <span class="material-symbols-outlined text-[20px] leading-none">{{ item.activo ? 'delete' : 'restore' }}</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="px-6 py-8 text-center text-on-surface-variant font-body-sm text-body-sm">
+                No se encontraron habitaciones con los filtros actuales.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+@if (isModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" (click)="closeModal()"></div>
+    
+    <div class="relative bg-surface rounded-2xl w-full max-w-md shadow-lg flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
+      <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between sticky top-0 bg-surface rounded-t-2xl z-10">
+        <h3 class="font-h2 text-h2 text-on-surface">
+          {{ modalMode() === 'create' ? 'Nueva Habitación' : 'Editar Habitación' }}
+        </h3>
+        <button (click)="closeModal()" class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto custom-scrollbar">
+        <form class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+              Número <span class="text-error">*</span>
+            </label>
+            <input type="text" [ngModel]="form().numero" (ngModelChange)="form.update($event ? (f => ({...f, numero: $event})) : (f => ({...f, numero: $event})))" name="numero" required
+              class="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline/50" placeholder="Ej. 101">
+          </div>
+          
+          <div class="space-y-1.5">
+            <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+              Categoría <span class="text-error">*</span>
+            </label>
+            <app-custom-select 
+              [options]="categoriasOptions()" 
+              [ngModel]="form().categoriaId" 
+              name="categoriaId"
+              (ngModelChange)="form.update($event ? (f => ({...f, categoriaId: $event})) : (f => ({...f, categoriaId: $event})))">
+            </app-custom-select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+              Piso <span class="text-error">*</span>
+            </label>
+            <app-custom-select 
+              [options]="pisosOptions()" 
+              [ngModel]="form().pisoId" 
+              name="pisoId"
+              (ngModelChange)="form.update($event ? (f => ({...f, pisoId: $event})) : (f => ({...f, pisoId: $event})))">
+            </app-custom-select>
+          </div>
+        </form>
+      </div>
+
+      <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-lowest rounded-b-2xl flex justify-end gap-3 sticky bottom-0 z-10">
+        <button type="button" (click)="closeModal()" class="px-5 py-2.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-colors active:scale-95 duration-150">
+          Cancelar
+        </button>
+        <button type="button" (click)="save()" [disabled]="isSaving()" class="bg-[#0a2463] text-white px-5 py-2.5 rounded-lg font-label-md text-label-md hover:bg-[#0a2463]/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.1)] active:scale-95 duration-150 disabled:opacity-50 flex items-center gap-2">
+          @if (isSaving()) {
+            <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          }
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}

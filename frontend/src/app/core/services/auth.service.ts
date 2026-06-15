@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, ChangePasswordRequest } from '../../shared/models/auth.models';
+import { LoginRequest, LoginResponse, ChangePasswordRequest, VerifyRucResponse } from '../../shared/models/auth.models';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -16,6 +16,10 @@ export class AuthService {
   
   constructor() {
     this.restoreSession();
+  }
+
+  verifyRuc(ruc: string) {
+    return this.http.get<VerifyRucResponse>(`${environment.apiUrl}/auth/verify-ruc?ruc=${ruc}`);
   }
 
   login(credentials: LoginRequest) {
@@ -53,6 +57,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user_info');
+    localStorage.removeItem('roomiohub_active_sede');
     this.currentUser.set(null);
     this.router.navigate(['/auth/login']);
   }

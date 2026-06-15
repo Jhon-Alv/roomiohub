@@ -43,7 +43,7 @@
     </div>
 
     <!-- Tabla -->
-    <div class="overflow-x-auto relative">
+    <div class="overflow-x-auto relative min-h-[236px]">
       @if (isLoading()) {
         <div class="absolute inset-0 bg-surface/50 backdrop-blur-sm flex items-center justify-center z-10">
           <div class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -96,10 +96,10 @@
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-2 transition-opacity">
-                  <button (click)="openEditModal(user)" class="w-8 h-8 flex items-center justify-center text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low" title="Editar">
+                  <button (click)="openEditModal(user)" class="w-8 h-8 shrink-0 flex items-center justify-center text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low" title="Editar">
                     <span class="material-symbols-outlined text-[20px] leading-none">edit</span>
                   </button>
-                  <button (click)="toggleStatus(user)" class="w-8 h-8 flex items-center justify-center text-outline transition-colors rounded-full" 
+                  <button (click)="toggleStatus(user)" class="w-8 h-8 shrink-0 flex items-center justify-center text-outline transition-colors rounded-full" 
                     [ngClass]="user.activo ? 'hover:text-error hover:bg-error-container' : 'hover:text-primary hover:bg-surface-container-low'"
                     [title]="user.activo ? 'Desactivar' : 'Activar'">
                     <span class="material-symbols-outlined text-[20px] leading-none">{{ user.activo ? 'delete' : 'restore' }}</span>
@@ -120,7 +120,9 @@
 
     <!-- Paginación (Hardcoded temporalmente según petición) -->
     <div class="p-4 border-t border-outline-variant flex items-center justify-between bg-surface-container-lowest">
-      <span class="font-body-sm text-body-sm text-on-surface-variant">Mostrando {{usuarios().length}} usuarios</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">
+        Mostrando {{usuarios().length}} {{ usuarios().length === 1 ? 'usuario' : 'usuarios' }}
+      </span>
     </div>
   </div>
 </div>

@@ -37,6 +37,7 @@ export class SedeSelectorComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.sedeState.clearSede();
     this.loadSedes();
   }
 

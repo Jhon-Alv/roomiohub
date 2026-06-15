@@ -3,6 +3,7 @@ package com.roomiohub.backend.modules.admin.service.sede;
 import com.roomiohub.backend.modules.admin.dto.sede.request.ChangeSedeStatusRequest;
 import com.roomiohub.backend.security.identity.model.SedeEntity;
 import com.roomiohub.backend.security.identity.repository.SedeRepository;
+import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import com.roomiohub.backend.shared.exceptions.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,9 @@ public class ChangeSedeStatusService {
 
         log.info("Cambiando el estado de la sede con id: {}", id);
 
-        SedeEntity sede = sedeRepository.findById(id)
+        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+
+        SedeEntity sede = sedeRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "La sede no existe o no tiene acceso."));
 
         if (Objects.equals(sede.getActivo(), request.getActivo())) {

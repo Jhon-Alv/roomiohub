@@ -1,5 +1,7 @@
 package com.roomiohub.backend.security.config;
 
+import com.roomiohub.backend.security.identity.repository.CuentaRepository;
+import com.roomiohub.backend.security.identity.model.CuentaEntity;
 import com.roomiohub.backend.security.identity.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +24,21 @@ public class AuthConfig {
     private final UsuarioRepository usuarioRepository;
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> usuarioRepository.findByUsernameAndActivoTrue(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado o inactivo"));
+    public UserDetailsService userDetailsService(CuentaRepository cuentaRepository) {
+        return combinedUsername -> {
+            String[] parts = combinedUsername.split(":", 2);
+            if (parts.length != 2) {
+                throw new UsernameNotFoundException("Formato de credenciales inválido. Debe ser RUC:USERNAME");
+            }
+            String ruc = parts[0];
+            String username = parts[1];
+
+            CuentaEntity cuenta = cuentaRepository.findByRuc(ruc)
+                    .orElseThrow(() -> new UsernameNotFoundException("Empresa no encontrada"));
+
+            return usuarioRepository.findByUsernameAndTenantIdAndActivoTrue(username, cuenta.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado o inactivo"));
+        };
     }
 
     @Bean
@@ -33,8 +47,8 @@ public class AuthConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+    public AuthenticationProvider authenticationProvider(CuentaRepository cuentaRepository){
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService(cuentaRepository));
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

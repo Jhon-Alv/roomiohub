@@ -27,8 +27,9 @@ public interface AuthMapper {
         if (request == null) {
             return null;
         }
+        String combinedUsername = request.getRuc() + ":" + request.getUsername();
         return new UsernamePasswordAuthenticationToken(
-                request.getUsername(),
+                combinedUsername,
                 request.getPassword()
         );
     }

@@ -41,6 +41,8 @@ public interface TarifaMapper {
     @Mapping(target = "planTiempoHoras", source = "entity.planTiempo.horas")
     @Mapping(target = "precioBase", source = "entity.precioBase")
     @Mapping(target = "activo", source = "entity.activo")
+    FindTarifasResponse toFindListResponseElement(TarifaEntity entity);
+
     List<FindTarifasResponse> toFindListResponse(List<TarifaEntity> entities);
 
     @Mapping(target = "precioBase", source = "request.precioBase")

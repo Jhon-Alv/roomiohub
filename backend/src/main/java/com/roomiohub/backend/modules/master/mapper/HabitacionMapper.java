@@ -44,6 +44,8 @@ public interface HabitacionMapper {
     @Mapping(target = "pisoNombre", source = "entity.piso.nombre")
     @Mapping(target = "estadoActual", source = "entity.estadoActual")
     @Mapping(target = "activo", source = "entity.activo")
+    FindHabitacionesResponse toFindListResponseElement(HabitacionEntity entity);
+
     List<FindHabitacionesResponse> toFindListResponse(List<HabitacionEntity> entities);
 
     @Mapping(target = "numero", source = "request.numero")

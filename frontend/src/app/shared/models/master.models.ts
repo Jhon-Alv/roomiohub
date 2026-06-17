@@ -95,3 +95,42 @@ export interface UpdateTarifaRequest {
   categoriaId: string;
   planTiempoId: string;
 }
+
+export interface PromocionDto {
+  id: string;
+  nombre: string;
+  activo: boolean;
+}
+
+export interface CreatePromocionRequest {
+  nombre: string;
+}
+
+export interface UpdatePromocionRequest {
+  nombre: string;
+}
+
+export interface PromocionTarifaDto {
+  id: string;
+  promocionId: string;
+  tarifaId: string;
+  categoriaNombre: string;
+  planTiempoNombre: string;
+  precioBase: number;
+  precioPromocion: number;
+  activo: boolean;
+}
+
+export interface PromocionTarifaItemRequest {
+  tarifaId: string;
+  precioPromocion: number;
+}
+
+export interface BatchCreatePromocionTarifaRequest {
+  items: PromocionTarifaItemRequest[];
+}
+
+export interface UpdatePromocionTarifaPriceRequest {
+  precioPromocion: number;
+}
+

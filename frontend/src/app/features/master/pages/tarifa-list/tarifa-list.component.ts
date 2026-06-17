@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -12,7 +12,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
   selector: 'app-tarifa-list',
   standalone: true,
   imports: [CommonModule, FormsModule, CustomSelectComponent],
-  templateUrl: './tarifa-list.html'
+  templateUrl: './tarifa-list.component.html'
 })
 export class TarifaListComponent implements OnInit {
   private tarifaService = inject(TarifaService);
@@ -40,6 +40,18 @@ export class TarifaListComponent implements OnInit {
   // Filters state
   searchTerm = signal<string>('');
   selectedEstado = signal<string>('Estado: Todos');
+  selectedCategoria = signal<string>('Todas');
+  selectedPlanTiempo = signal<string>('Todos');
+
+  filterCategoriasOptions = computed<SelectOption[]>(() => [
+    { value: 'Todas', label: 'Categoría: Todas' },
+    ...this.categoriasOptions()
+  ]);
+
+  filterPlanesOptions = computed<SelectOption[]>(() => [
+    { value: 'Todos', label: 'Plan: Todos' },
+    ...this.planesOptions()
+  ]);
 
   estadoFilterOptions: SelectOption[] = [
     { value: 'Estado: Todos', label: 'Estado: Todos' },
@@ -92,7 +104,9 @@ export class TarifaListComponent implements OnInit {
 
     this.tarifaService.getTarifas({
       search: this.searchTerm() || undefined,
-      activo: activo
+      activo: activo,
+      categoriaId: this.selectedCategoria() !== 'Todas' ? this.selectedCategoria() : undefined,
+      planTiempoId: this.selectedPlanTiempo() !== 'Todos' ? this.selectedPlanTiempo() : undefined
     }).subscribe({
       next: (data) => {
         this.tarifas.set(data);

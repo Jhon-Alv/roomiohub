@@ -75,7 +75,7 @@ public class BatchCreatePromocionTarifaService {
             PromocionTarifaEntity promocionTarifa = PromocionTarifaEntity.builder()
                     .promocion(promocion)
                     .tarifa(tarifa)
-                    .precioPromocion(item.getPrecioPromocion())
+                    .precioPromocional(item.getPrecioPromocion())
                     .activo(true)
                     .build();
 

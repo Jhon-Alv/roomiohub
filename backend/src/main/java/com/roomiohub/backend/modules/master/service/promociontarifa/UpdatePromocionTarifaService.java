@@ -36,7 +36,7 @@ public class UpdatePromocionTarifaService {
             throw new RestException(HttpStatus.FORBIDDEN, "Acceso denegado");
         }
 
-        promocionTarifat.setPrecioPromocion(request.getPrecioPromocion());
+        promocionTarifat.setPrecioPromocional(request.getPrecioPromocion());
         repository.merge(promocionTarifat);
         log.info("Precio de asociación actualizado exitosamente");
     }

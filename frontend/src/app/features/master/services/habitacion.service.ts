@@ -11,11 +11,13 @@ export class HabitacionService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/master/habitaciones`;
 
-  getHabitaciones(filters?: { search?: string, activo?: boolean, sedeId?: string }): Observable<HabitacionDto[]> {
+  getHabitaciones(filters?: { search?: string, activo?: boolean, sedeId?: string, categoriaId?: string, pisoId?: string }): Observable<HabitacionDto[]> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.activo !== undefined && filters?.activo !== null) params = params.set('activo', filters.activo.toString());
     if (filters?.sedeId) params = params.set('sedeId', filters.sedeId);
+    if (filters?.categoriaId) params = params.set('categoriaId', filters.categoriaId);
+    if (filters?.pisoId) params = params.set('pisoId', filters.pisoId);
     
     return this.http.get<HabitacionDto[]>(this.apiUrl, { params });
   }

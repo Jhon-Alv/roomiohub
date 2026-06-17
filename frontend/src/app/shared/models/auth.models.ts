@@ -16,6 +16,7 @@ export interface LoginResponse {
   tenantId: string | null;
   sedeId: string | null;
   flagCambiarPassword: boolean;
+  flagModuloPromociones: boolean;
 }
 
 export interface ChangePasswordRequest {

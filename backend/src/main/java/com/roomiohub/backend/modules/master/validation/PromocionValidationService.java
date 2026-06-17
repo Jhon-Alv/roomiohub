@@ -21,8 +21,8 @@ public class PromocionValidationService {
         CuentaEntity cuenta = cuentaRepository.findById(tenantId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Cuenta no encontrada"));
 
-        if (cuenta.getPlan() == null || !Boolean.TRUE.equals(cuenta.getPlan().getFlagModuloPromociones())) {
-            throw new RestException(HttpStatus.FORBIDDEN, "Tu plan actual no incluye el módulo de promociones. Mejora tu plan para acceder a esta funcionalidad.");
-        }
+        // if (cuenta.getPlan() == null || !Boolean.TRUE.equals(cuenta.getPlan().getFlagModuloPromociones())) {
+        //     throw new RestException(HttpStatus.FORBIDDEN, "Tu plan actual no incluye el módulo de promociones. Mejora tu plan para acceder a esta funcionalidad.");
+        // }
     }
 }

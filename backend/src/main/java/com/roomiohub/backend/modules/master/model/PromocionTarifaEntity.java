@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "promociones_tarifa", uniqueConstraints = {
+@Table(name = "promocion_tarifas", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"promocion_id", "tarifa_id"})
 })
 public class PromocionTarifaEntity {
@@ -29,8 +29,8 @@ public class PromocionTarifaEntity {
     @JoinColumn(name = "tarifa_id", nullable = false)
     private TarifaEntity tarifa;
 
-    @Column(name = "precio_promocion", nullable = false, precision = 10, scale = 2)
-    private BigDecimal precioPromocion;
+    @Column(name = "precio_promocional", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioPromocional;
 
     @Builder.Default
     @Column(name = "activo")

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -13,7 +13,7 @@ import { SedeStateService } from '../../../../core/services/sede-state.service';
   selector: 'app-habitacion-list',
   standalone: true,
   imports: [CommonModule, FormsModule, CustomSelectComponent],
-  templateUrl: './habitacion-list.html'
+  templateUrl: './habitacion-list.component.html'
 })
 export class HabitacionListComponent implements OnInit {
   private habitacionService = inject(HabitacionService);
@@ -42,6 +42,18 @@ export class HabitacionListComponent implements OnInit {
   // Filters state
   searchTerm = signal<string>('');
   selectedEstado = signal<string>('Estado: Todos');
+  selectedCategoria = signal<string>('Todas');
+  selectedPiso = signal<string>('Todos');
+
+  filterCategoriasOptions = computed<SelectOption[]>(() => [
+    { value: 'Todas', label: 'Categoría: Todas' },
+    ...this.categoriasOptions()
+  ]);
+
+  filterPisosOptions = computed<SelectOption[]>(() => [
+    { value: 'Todos', label: 'Piso: Todos' },
+    ...this.pisosOptions()
+  ]);
 
   estadoFilterOptions: SelectOption[] = [
     { value: 'Estado: Todos', label: 'Estado: Todos' },
@@ -105,7 +117,9 @@ export class HabitacionListComponent implements OnInit {
     this.habitacionService.getHabitaciones({
       search: this.searchTerm() || undefined,
       activo: activo,
-      sedeId: sedeId
+      sedeId: sedeId,
+      categoriaId: this.selectedCategoria() !== 'Todas' ? this.selectedCategoria() : undefined,
+      pisoId: this.selectedPiso() !== 'Todos' ? this.selectedPiso() : undefined
     }).subscribe({
       next: (data) => {
         this.habitaciones.set(data);

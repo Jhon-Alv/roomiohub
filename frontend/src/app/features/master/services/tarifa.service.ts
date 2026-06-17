@@ -11,10 +11,12 @@ export class TarifaService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/master/tarifas`;
 
-  getTarifas(filters?: { search?: string, activo?: boolean }): Observable<TarifaDto[]> {
+  getTarifas(filters?: { search?: string, activo?: boolean, categoriaId?: string, planTiempoId?: string }): Observable<TarifaDto[]> {
     let params = new HttpParams();
-    if (filters?.search) params = params.set('search', filters.search);
+    if (filters?.search) params = params.set('search', filters.search); // Local search might be used by component or ignored by backend
     if (filters?.activo !== undefined && filters?.activo !== null) params = params.set('activo', filters.activo.toString());
+    if (filters?.categoriaId) params = params.set('categoriaId', filters.categoriaId);
+    if (filters?.planTiempoId) params = params.set('planTiempoId', filters.planTiempoId);
     
     return this.http.get<TarifaDto[]>(this.apiUrl, { params });
   }

@@ -13,6 +13,8 @@ public interface HabitacionRepository extends BaseJpaRepository<HabitacionEntity
 
     Optional<HabitacionEntity> findByIdAndTenantId(UUID id, UUID tenantId);
 
+    java.util.List<HabitacionEntity> findByTenantIdAndSedeIdAndActivoTrue(UUID tenantId, UUID sedeId);
+
     boolean existsByNumeroAndSedeId(String numero, UUID sedeId);
 
     long countByTenantId(UUID tenantId);

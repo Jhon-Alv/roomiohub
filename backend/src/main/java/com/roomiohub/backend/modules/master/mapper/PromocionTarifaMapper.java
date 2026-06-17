@@ -17,7 +17,7 @@ public interface PromocionTarifaMapper {
     @Mapping(target = "categoriaNombre", source = "entity.tarifa.categoria.nombre")
     @Mapping(target = "planTiempoNombre", source = "entity.tarifa.planTiempo.nombre")
     @Mapping(target = "precioBase", source = "entity.tarifa.precioBase")
-    @Mapping(target = "precioPromocion", source = "entity.precioPromocion")
+    @Mapping(target = "precioPromocion", source = "entity.precioPromocional")
     @Mapping(target = "activo", source = "entity.activo")
     PromocionTarifaResponse toResponse(PromocionTarifaEntity entity);
 

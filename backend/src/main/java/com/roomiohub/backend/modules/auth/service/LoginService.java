@@ -4,14 +4,12 @@ import com.roomiohub.backend.modules.auth.dto.response.LoginResponse;
 import com.roomiohub.backend.modules.auth.dto.request.LoginRequest;
 import com.roomiohub.backend.modules.auth.mapper.AuthMapper;
 import com.roomiohub.backend.security.identity.model.UsuarioEntity;
-import com.roomiohub.backend.security.identity.repository.UsuarioRepository;
 import com.roomiohub.backend.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

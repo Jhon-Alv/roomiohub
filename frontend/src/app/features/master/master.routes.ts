@@ -20,10 +20,18 @@ export const masterRoutes: Routes = [
   },
   {
     path: 'habitaciones',
-    loadComponent: () => import('./pages/habitacion-list/habitacion-list').then(c => c.HabitacionListComponent)
+    loadComponent: () => import('./pages/habitacion-list/habitacion-list.component').then(c => c.HabitacionListComponent)
   },
   {
     path: 'tarifas',
-    loadComponent: () => import('./pages/tarifa-list/tarifa-list').then(c => c.TarifaListComponent)
+    loadComponent: () => import('./pages/tarifa-list/tarifa-list.component').then(c => c.TarifaListComponent)
+  },
+  {
+    path: 'promociones',
+    loadComponent: () => import('./pages/promocion-list/promocion-list.component').then(c => c.PromocionListComponent)
+  },
+  {
+    path: 'promociones/:id',
+    loadComponent: () => import('./pages/promocion-detail/promocion-detail.component').then(c => c.PromocionDetailComponent)
   }
 ];

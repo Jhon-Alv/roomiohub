@@ -21,4 +21,5 @@ public class RoomMapController {
     public SseEmitter streamRoomMap(@PathVariable UUID sedeId) {
         return sseMapService.subscribeToMap(sedeId);
     }
+
 }

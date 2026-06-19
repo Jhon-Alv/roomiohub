@@ -14,18 +14,22 @@ public class UserContextHolder {
     }
 
     public static UUID getRequiredUserId() {
+
         Object principal = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
         if (!(principal instanceof UsuarioEntity)) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado correctamente");
         }
+
         return ((UsuarioEntity) principal).getId();
     }
     
     public static UsuarioEntity getRequiredUser() {
+
         Object principal = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
         if (!(principal instanceof UsuarioEntity)) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado correctamente");
         }
+
         return (UsuarioEntity) principal;
     }
 }

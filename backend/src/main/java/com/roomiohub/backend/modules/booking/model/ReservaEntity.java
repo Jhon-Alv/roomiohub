@@ -3,6 +3,7 @@ package com.roomiohub.backend.modules.booking.model;
 import com.roomiohub.backend.shared.persistence.TenantBaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -43,8 +44,10 @@ public class ReservaEntity extends TenantBaseEntity {
     @Column(name = "cantidad_huespedes")
     private Integer cantidadHuespedes = 1;
 
-    @Column(name = "metodo_pago", columnDefinition = "metodo_pago")
-    private String metodoPago;
+    @Enumerated(EnumType.STRING)
+    @JdbcType(org.hibernate.dialect.type.PostgreSQLEnumJdbcType.class)
+    @Column(name = "metodo_pago", columnDefinition = "metodo_pago", nullable = false)
+    private MetodoPago metodoPago;
 
     @Column(name = "fecha_ingreso", nullable = false)
     private LocalDateTime fechaIngreso;
@@ -66,4 +69,27 @@ public class ReservaEntity extends TenantBaseEntity {
 
     @Column(name = "monto_total", nullable = false)
     private BigDecimal montoTotal;
+
+    public void iniciarEstadia(Integer horas, BigDecimal precioBase, BigDecimal precioPromocional) {
+        this.fechaIngreso = LocalDateTime.now();
+        this.fechaSalidaEsperada = this.fechaIngreso.plusHours(horas);
+        
+        this.montoSubtotal = precioBase;
+        if (precioPromocional != null) {
+            this.montoDescuento = precioBase.subtract(precioPromocional);
+            this.montoTotal = precioPromocional;
+        } else {
+            this.montoDescuento = BigDecimal.ZERO;
+            this.montoTotal = precioBase;
+        }
+        this.montoPenalidad = BigDecimal.ZERO;
+    }
+
+    public void finalizarEstadia(BigDecimal penalidadExtra) {
+        this.fechaSalidaReal = LocalDateTime.now();
+        if (penalidadExtra != null && penalidadExtra.compareTo(BigDecimal.ZERO) > 0) {
+            this.montoPenalidad = (this.montoPenalidad == null ? BigDecimal.ZERO : this.montoPenalidad).add(penalidadExtra);
+            this.montoTotal = this.montoTotal.add(penalidadExtra);
+        }
+    }
 }

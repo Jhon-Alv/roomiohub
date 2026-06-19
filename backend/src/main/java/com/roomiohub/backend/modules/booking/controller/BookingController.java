@@ -1,8 +1,7 @@
 package com.roomiohub.backend.modules.booking.controller;
 
-import com.roomiohub.backend.modules.booking.dto.request.CheckInRequestDto;
-import com.roomiohub.backend.modules.booking.dto.request.CheckOutRequestDto;
-import com.roomiohub.backend.modules.booking.model.ReservaEntity;
+import com.roomiohub.backend.modules.booking.dto.request.CheckInRequest;
+import com.roomiohub.backend.modules.booking.dto.request.CheckOutRequest;
 import com.roomiohub.backend.modules.booking.service.CheckInService;
 import com.roomiohub.backend.modules.booking.service.CheckOutService;
 import jakarta.validation.Valid;
@@ -14,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import com.roomiohub.backend.modules.booking.dto.response.CheckInResponse;
+import com.roomiohub.backend.modules.booking.dto.response.CheckOutResponse;
+
 @RestController
 @RequestMapping("/api/v1/booking/operaciones")
 @RequiredArgsConstructor
@@ -24,21 +26,21 @@ public class BookingController {
 
     @PostMapping("/checkin/habitacion/{habitacionId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION')")
-    public ResponseEntity<ReservaEntity> realizarCheckIn(
+    public ResponseEntity<CheckInResponse> realizarCheckIn(
             @PathVariable UUID habitacionId,
-            @Valid @RequestBody CheckInRequestDto request
+            @Valid @RequestBody CheckInRequest request
     ) {
-        ReservaEntity reserva = checkInService.execute(habitacionId, request);
-        return new ResponseEntity<>(reserva, HttpStatus.CREATED);
+        CheckInResponse response = checkInService.execute(habitacionId, request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/checkout/habitacion/{habitacionId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION')")
-    public ResponseEntity<ReservaEntity> realizarCheckOut(
+    public ResponseEntity<CheckOutResponse> realizarCheckOut(
             @PathVariable UUID habitacionId,
-            @Valid @RequestBody CheckOutRequestDto request
+            @Valid @RequestBody CheckOutRequest request
     ) {
-        ReservaEntity reserva = checkOutService.execute(habitacionId, request);
-        return ResponseEntity.ok(reserva);
+        CheckOutResponse response = checkOutService.execute(habitacionId, request);
+        return ResponseEntity.ok(response);
     }
 }

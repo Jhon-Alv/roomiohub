@@ -2,7 +2,7 @@ package com.roomiohub.backend.modules.booking.service;
 
 import com.roomiohub.backend.modules.booking.dto.response.RoomMapDto;
 import com.roomiohub.backend.modules.booking.mapper.RoomMapMapper;
-import com.roomiohub.backend.modules.master.api.IMasterHabitacionPort;
+import com.roomiohub.backend.modules.master.api.habitacion.IMasterHabitacionPort;
 import com.roomiohub.backend.modules.master.api.dto.HabitacionDataDto;
 import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import lombok.RequiredArgsConstructor;

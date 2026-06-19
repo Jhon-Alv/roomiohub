@@ -1,8 +1,10 @@
 package com.roomiohub.backend.modules.booking.dto.request;
 
+import com.roomiohub.backend.modules.booking.model.MetodoPago;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckInRequestDto {
+public class CheckInRequest {
 
     @NotBlank(message = "El número de documento es obligatorio")
     private String numeroDocumento;
@@ -34,17 +36,6 @@ public class CheckInRequestDto {
     @Min(value = 1, message = "Debe haber al menos 1 huésped")
     private Integer cantidadHuespedes;
 
-    @NotBlank(message = "El método de pago es obligatorio")
-    private String metodoPago;
-
-    @NotNull(message = "La fecha de salida esperada es obligatoria")
-    private LocalDateTime fechaSalidaEsperada;
-
-    @NotNull(message = "El subtotal es obligatorio")
-    private BigDecimal montoSubtotal;
-
-    private BigDecimal montoDescuento;
-
-    @NotNull(message = "El total es obligatorio")
-    private BigDecimal montoTotal;
+    @NotNull(message = "El método de pago es obligatorio")
+    private MetodoPago metodoPago;
 }

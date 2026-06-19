@@ -1,6 +1,7 @@
 package com.roomiohub.backend.modules.booking.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckOutRequestDto {
+public class CheckOutRequest {
 
     @NotNull(message = "El ID de la sede es obligatorio")
     private UUID sedeId;
 
-    @NotNull(message = "El monto de penalidad no puede ser nulo, enviar 0 si no hay")
+    @PositiveOrZero(message = "El monto total debe ser 0 o mayor")
     private BigDecimal montoPenalidad;
-
-    private String observacion;
 }

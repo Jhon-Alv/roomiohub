@@ -1,6 +1,7 @@
 package com.roomiohub.backend.modules.master.model;
 
 import com.roomiohub.backend.security.identity.model.SedeEntity;
+import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 import com.roomiohub.backend.shared.persistence.TenantBaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

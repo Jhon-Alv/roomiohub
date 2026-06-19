@@ -1,4 +1,4 @@
-package com.roomiohub.backend.modules.master.model;
+package com.roomiohub.backend.shared.enums;
 
 public enum EstadoHabitacion {
     DISPONIBLE,

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
+import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 
 @Data
 @Builder
@@ -12,5 +13,5 @@ public class HabitacionDataDto {
     private String numero;
     private String categoriaNombre;
     private String pisoNombre;
-    private String estadoActual;
+    private EstadoHabitacion estadoActual;
 }

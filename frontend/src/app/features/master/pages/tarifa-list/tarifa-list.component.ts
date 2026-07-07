@@ -131,10 +131,14 @@ export class TarifaListComponent implements OnInit {
   openEditModal(item: TarifaDto) {
     this.modalMode.set('edit');
     this.selectedId.set(item.id);
+    
+    const catId = this.categoriasOptions().find(c => c.label === item.categoriaNombre)?.value || '';
+    const planId = this.planesOptions().find(p => p.label === item.planTiempoNombre)?.value || '';
+
     this.form.set({ 
       precioBase: item.precioBase, 
-      categoriaId: '', 
-      planTiempoId: '' 
+      categoriaId: catId, 
+      planTiempoId: planId 
     });
     this.isModalOpen.set(true);
   }

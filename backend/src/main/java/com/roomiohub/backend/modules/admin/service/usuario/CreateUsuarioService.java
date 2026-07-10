@@ -5,6 +5,7 @@ import com.roomiohub.backend.modules.admin.dto.usuario.response.CreateUsuarioRes
 import com.roomiohub.backend.modules.admin.mapper.UsuarioMapper;
 import com.roomiohub.backend.modules.admin.validation.CreateUsuarioValidationService;
 import com.roomiohub.backend.modules.auth.util.PasswordGenerator;
+import com.roomiohub.backend.security.identity.model.RolUsuario;
 import com.roomiohub.backend.security.identity.model.UsuarioEntity;
 import com.roomiohub.backend.security.identity.repository.UsuarioRepository;
 import com.roomiohub.backend.security.tenant.TenantContextHolder;
@@ -33,6 +34,10 @@ public class CreateUsuarioService {
     public CreateUsuarioResponse execute(CreateUsuarioRequest request) {
         log.info("Iniciando proceso de creación de usuario con username: {}", request.getUsername());
         UUID tenantId = TenantContextHolder.getRequiredTenantId();
+
+        if (TenantContextHolder.getSedeId() != null && request.getRol() == RolUsuario.ADMIN) {
+            throw new RestException(HttpStatus.FORBIDDEN, "Solo el administrador principal puede crear usuarios con rol ADMIN");
+        }
 
         String temporalPassword = passwordGenerator.generate(10);
         String encodedPassword = passwordEncoder.encode(temporalPassword);

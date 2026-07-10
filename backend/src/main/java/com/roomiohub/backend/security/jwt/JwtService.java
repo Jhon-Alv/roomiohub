@@ -34,6 +34,11 @@ public class JwtService {
         return tenantId != null ? UUID.fromString(tenantId) : null;
     }
 
+    public UUID extractSedeId(String token) {
+        String sedeId = extractClaim(token, claims -> claims.get("sedeId", String.class));
+        return sedeId != null ? UUID.fromString(sedeId) : null;
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -45,6 +50,9 @@ public class JwtService {
 
     public String generateToken(Map<String, Object> extraClaims, UsuarioEntity usuario) {
         extraClaims.put("tenantId", usuario.getTenantId().toString());
+        if (usuario.getSedeId() != null) {
+            extraClaims.put("sedeId", usuario.getSedeId().toString());
+        }
         extraClaims.put("rol", "ROLE_" + usuario.getRol().name());
 
         return Jwts.builder()

@@ -2,6 +2,8 @@ package com.roomiohub.backend.modules.admin.service.usuario;
 
 import com.roomiohub.backend.modules.admin.dto.usuario.request.UpdateUsuarioRequest;
 import com.roomiohub.backend.modules.admin.mapper.UsuarioMapper;
+import com.roomiohub.backend.security.identity.UserContextHolder;
+import com.roomiohub.backend.security.identity.model.RolUsuario;
 import com.roomiohub.backend.security.identity.model.UsuarioEntity;
 import com.roomiohub.backend.security.identity.repository.UsuarioRepository;
 import com.roomiohub.backend.security.tenant.TenantContextHolder;
@@ -34,7 +36,17 @@ public class UpdateUsuarioService {
         UsuarioEntity usuario = usuarioRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Usuario no existe o no tiene acceso"));
 
-        if (!request.getNuevaPassword().isBlank()) {
+        if (TenantContextHolder.getSedeId() != null) {
+            UUID currentUserId = UserContextHolder.getRequiredUserId();
+            if (request.getRol() == RolUsuario.ADMIN) {
+                throw new RestException(HttpStatus.FORBIDDEN, "Solo el administrador principal puede asignar el rol ADMIN");
+            }
+            if (usuario.getRol() == RolUsuario.ADMIN && !usuario.getId().equals(currentUserId)) {
+                throw new RestException(HttpStatus.FORBIDDEN, "Solo el administrador principal puede editar usuarios con rol ADMIN");
+            }
+        }
+
+        if (request.getNuevaPassword() != null && !request.getNuevaPassword().isBlank()) {
             String encodedPassword = passwordEncoder.encode(request.getNuevaPassword());
             request.setNuevaPassword(encodedPassword);
         }

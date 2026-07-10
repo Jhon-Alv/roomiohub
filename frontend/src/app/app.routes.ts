@@ -20,7 +20,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'reception',
         pathMatch: 'full'
       },
       {
@@ -37,10 +37,12 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
       },
+      */
       {
         path: 'reception',
         loadChildren: () => import('./features/reception/reception.routes').then(m => m.RECEPTION_ROUTES)
       },
+      /*
       {
         path: 'logistics',
         loadChildren: () => import('./features/logistics/logistics.routes').then(m => m.LOGISTICS_ROUTES)

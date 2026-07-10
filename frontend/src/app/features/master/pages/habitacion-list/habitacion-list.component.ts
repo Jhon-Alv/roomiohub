@@ -144,12 +144,16 @@ export class HabitacionListComponent implements OnInit {
   openEditModal(item: HabitacionDto) {
     this.modalMode.set('edit');
     this.selectedId.set(item.id);
+    
+    // Find IDs from labels
+    const catId = this.categoriasOptions().find(c => c.label === item.categoriaNombre)?.value || '';
+    const pisoId = this.pisosOptions().find(p => p.label === item.pisoNombre)?.value || '';
+
     this.form.set({ 
       numero: item.numero, 
-      categoriaId: '', // Ideally we need to map the name to ID if the backend doesn't return ID. Oh wait, HabitacionDto might not return ID of category/piso? Let's check DTO. Wait, the FindHabitacionesResponse didn't have pisoId or categoriaId, only names. We should update the backend or just use an extra fetch? Let's try to map if we can, but if not we might need to change backend DTO or accept that editing requires reselecting. Actually, we should edit backend DTO to include categoryId and pisoId.
-      pisoId: '' 
+      categoriaId: catId,
+      pisoId: pisoId 
     });
-    // In a real app we would either return the ID in the DTO, or fetch the full entity.
     this.isModalOpen.set(true);
   }
 
@@ -216,5 +220,16 @@ export class HabitacionListComponent implements OnInit {
         this.notificationService.showError('Error al cambiar el estado');
       }
     });
+  }
+
+  getEstadoStyles(estado: string): string {
+    switch (estado) {
+      case 'DISPONIBLE': return 'bg-[#d1fae5] text-[#065f46]';
+      case 'OCUPADO': return 'bg-[#fee2e2] text-[#991b1b]';
+      case 'SUCIO': return 'bg-[#ffedd5] text-[#9a3412]';
+      case 'EN_LIMPIEZA': return 'bg-[#fef08a] text-[#854d0e]';
+      case 'MANTENIMIENTO': return 'bg-[#f1f5f9] text-[#334155] border border-[#cbd5e1]';
+      default: return 'bg-surface-container text-on-surface';
+    }
   }
 }

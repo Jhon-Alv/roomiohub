@@ -1,6 +1,7 @@
-package com.roomiohub.backend.modules.master.api;
+package com.roomiohub.backend.modules.master.api.habitacion;
 
 import com.roomiohub.backend.modules.master.api.dto.HabitacionDataDto;
+import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,8 +14,10 @@ public interface IMasterHabitacionPort {
      */
     List<HabitacionDataDto> getHabitacionesActivasBySede(UUID tenantId, UUID sedeId);
 
+    HabitacionDataDto getHabitacionById(UUID habitacionId);
+
     /**
      * Actualiza el estado de la habitación.
      */
-    void updateEstadoHabitacion(UUID habitacionId, String nuevoEstado);
+    void updateEstadoHabitacion(UUID habitacionId, EstadoHabitacion nuevoEstado);
 }

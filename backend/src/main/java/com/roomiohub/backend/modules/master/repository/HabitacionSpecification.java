@@ -1,6 +1,6 @@
 package com.roomiohub.backend.modules.master.repository;
 
-import com.roomiohub.backend.modules.master.model.EstadoHabitacion;
+import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 import com.roomiohub.backend.modules.master.model.HabitacionEntity;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

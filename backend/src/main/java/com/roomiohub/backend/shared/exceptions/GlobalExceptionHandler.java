@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleRestException(RestException ex) {
         log.warn("Excepción de Negocio [{}]: {}", ex.getStatus().value(), ex.getMessage());
         return buildErrorResponse(ex.getStatus(), ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+        log.warn("Acceso denegado: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "Acceso denegado: no tiene permisos para realizar esta acción.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -15,6 +15,7 @@ export interface LoginResponse {
   rol: string;
   tenantId: string | null;
   sedeId: string | null;
+  sedeNombre: string | null;
   flagCambiarPassword: boolean;
   flagModuloPromociones: boolean;
 }

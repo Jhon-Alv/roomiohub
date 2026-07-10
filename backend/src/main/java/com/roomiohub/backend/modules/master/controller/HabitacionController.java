@@ -6,7 +6,7 @@ import com.roomiohub.backend.modules.master.dto.habitacion.request.UpdateHabitac
 import com.roomiohub.backend.modules.master.dto.habitacion.response.CreateHabitacionResponse;
 import com.roomiohub.backend.modules.master.dto.habitacion.response.FindHabitacionResponse;
 import com.roomiohub.backend.modules.master.dto.habitacion.response.FindHabitacionesResponse;
-import com.roomiohub.backend.modules.master.model.EstadoHabitacion;
+import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 import com.roomiohub.backend.modules.master.service.habitacion.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

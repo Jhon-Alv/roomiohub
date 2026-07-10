@@ -4,6 +4,7 @@ import com.roomiohub.backend.modules.auth.dto.response.LoginResponse;
 import com.roomiohub.backend.modules.auth.dto.request.LoginRequest;
 import com.roomiohub.backend.modules.auth.mapper.AuthMapper;
 import com.roomiohub.backend.security.identity.model.UsuarioEntity;
+import com.roomiohub.backend.security.identity.repository.SedeRepository;
 import com.roomiohub.backend.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class LoginService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final AuthMapper authMapper;
+    private final SedeRepository sedeRepository;
 
 
     public LoginResponse execute(LoginRequest request) {
@@ -34,9 +36,17 @@ public class LoginService {
 
         String token = jwtService.generateToken(user);
 
+        LoginResponse response = authMapper.toLoginResponse(user, token);
+
+        if (user.getSedeId() != null) {
+            response.setSedeNombre(sedeRepository.findById(user.getSedeId())
+                    .map(sede -> sede.getNombre())
+                    .orElse(null));
+        }
+
         log.info("Usuario {} autenticado exitosamente.", user.getUsername());
 
-        return authMapper.toLoginResponse(user, token);
+        return response;
 
     }
 

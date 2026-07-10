@@ -2,7 +2,7 @@ package com.roomiohub.backend.modules.master.service.habitacion;
 
 import com.roomiohub.backend.modules.master.dto.habitacion.response.FindHabitacionesResponse;
 import com.roomiohub.backend.modules.master.mapper.HabitacionMapper;
-import com.roomiohub.backend.modules.master.model.EstadoHabitacion;
+import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 import com.roomiohub.backend.modules.master.model.HabitacionEntity;
 import com.roomiohub.backend.modules.master.repository.HabitacionRepository;
 import com.roomiohub.backend.modules.master.repository.HabitacionSpecification;

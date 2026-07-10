@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String username;
         final UUID tenantId;
+        final UUID sedeId;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -52,6 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             username = jwtService.extractUsername(jwt);
             tenantId = jwtService.extractTenantId(jwt);
+            sedeId = jwtService.extractSedeId(jwt);
 
             if (username != null && tenantId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -69,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
                     TenantContextHolder.setTenantId(tenantId);
+                    TenantContextHolder.setSedeId(sedeId);
                 }
 
             }

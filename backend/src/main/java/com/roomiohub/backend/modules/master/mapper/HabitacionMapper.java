@@ -1,5 +1,6 @@
 package com.roomiohub.backend.modules.master.mapper;
 
+import com.roomiohub.backend.modules.master.api.dto.HabitacionDataDto;
 import com.roomiohub.backend.modules.master.dto.habitacion.request.CreateHabitacionRequest;
 import com.roomiohub.backend.modules.master.dto.habitacion.request.UpdateHabitacionRequest;
 import com.roomiohub.backend.modules.master.dto.habitacion.response.CreateHabitacionResponse;
@@ -47,6 +48,17 @@ public interface HabitacionMapper {
     FindHabitacionesResponse toFindListResponseElement(HabitacionEntity entity);
 
     List<FindHabitacionesResponse> toFindListResponse(List<HabitacionEntity> entities);
+
+    @Mapping(target = "id", source = "entity.id")
+    @Mapping(target = "numero", source = "entity.numero")
+    @Mapping(target = "categoriaId", source = "entity.categoria.id")
+    @Mapping(target = "categoriaNombre", source = "entity.categoria.nombre")
+    @Mapping(target = "pisoId", source = "entity.piso.id")
+    @Mapping(target = "pisoNombre", source = "entity.piso.nombre")
+    @Mapping(target = "estadoActual", source = "entity.estadoActual")
+    HabitacionDataDto toDataDto(HabitacionEntity entity);
+
+    List<HabitacionDataDto> toDataDtoList(List<HabitacionEntity> entities);
 
     @Mapping(target = "numero", source = "request.numero")
     void toUpdateEntity(@MappingTarget HabitacionEntity entity, UpdateHabitacionRequest request);

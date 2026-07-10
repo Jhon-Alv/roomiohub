@@ -18,4 +18,6 @@ public interface PromocionTarifaRepository extends BaseJpaRepository<PromocionTa
     List<PromocionTarifaEntity> findByPromocionIdAndTarifaIdIn(UUID promocionId, List<UUID> tarifaIds);
 
     boolean existsByPromocionIdAndTarifaId(UUID promocionId, UUID tarifaId);
+
+    Optional<PromocionTarifaEntity> findByPromocionIdAndTarifaId(UUID promocionId, UUID tarifaId);
 }

@@ -1,0 +1,91 @@
+<div class="p-container-padding max-w-7xl mx-auto space-y-6">
+<!-- Context Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+    <div>
+        <h2 class="font-h1 text-h1 font-bold text-on-surface">Mapa de Habitaciones</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">Vista operativa en tiempo real.</p>
+    </div>
+    
+    <div class="flex items-center gap-3 bg-surface-container-lowest p-1.5 rounded-lg border border-outline-variant soft-shadow overflow-x-auto">
+        @for (piso of pisos(); track piso.id) {
+            <button 
+                (click)="selectPiso(piso.id)"
+                [ngClass]="selectedPisoId() === piso.id ? 'text-primary bg-surface-container-highest font-medium' : 'text-on-surface-variant hover:bg-surface-container-high'"
+                class="px-4 py-1.5 font-label-md text-label-md rounded-md transition-colors whitespace-nowrap">
+                {{ piso.label }}
+            </button>
+        }
+    </div>
+</div>
+
+<!-- Floor Summary -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total</span>
+        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ totalHabitaciones() }}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col border-l-4 border-l-[#10b981]">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Disponibles</span>
+        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ disponibles() }}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col border-l-4 border-l-[#ef4444]">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Ocupadas</span>
+        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ ocupadas() }}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col border-l-4 border-l-[#f97316]">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sucias</span>
+        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ sucias() }}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col border-l-4 border-l-[#64748b]">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Mantenimiento</span>
+        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ mantenimiento() }}</span>
+    </div>
+</div>
+
+<!-- Room Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    @for (habitacion of filteredHabitaciones(); track habitacion.id) {
+        <div (click)="openRoomAction(habitacion)"
+             class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 soft-shadow flex flex-col hover:border-primary transition-colors cursor-pointer group relative overflow-hidden min-h-[140px]"
+             [ngClass]="habitacion.estadoActual === 'MANTENIMIENTO' ? 'bg-surface/50 cursor-not-allowed opacity-80' : ''">
+            
+            <div class="absolute top-0 left-0 w-full h-1" [ngClass]="getBorderClass(habitacion.estadoActual)"></div>
+            
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="font-h2 text-h2 font-bold text-on-surface">{{ habitacion.numero }}</h3>
+                <span class="px-2 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1" [ngClass]="getBadgeClass(habitacion.estadoActual)">
+                    <span class="material-symbols-outlined text-[14px]">{{ getIcon(habitacion.estadoActual) }}</span>
+                    {{ habitacion.estadoActual }}
+                </span>
+            </div>
+            
+            <div class="mt-auto flex justify-between items-end pt-2 border-t border-outline-variant/50">
+                <div class="flex flex-col">
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">{{ habitacion.categoria }}</span>
+                </div>
+            </div>
+        </div>
+    } @empty {
+        <div class="col-span-full py-12 flex flex-col items-center justify-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-4xl mb-2 text-outline">hotel</span>
+            <p class="font-body-md">No se encontraron habitaciones en este piso.</p>
+        </div>
+    }
+</div>
+</div>
+
+@if (checkInHabitacion(); as hab) {
+  <app-check-in-sidebar
+    [habitacion]="hab"
+    (close)="checkInHabitacion.set(null)"
+    (completed)="checkInHabitacion.set(null)">
+  </app-check-in-sidebar>
+}
+
+@if (checkOutHabitacion(); as hab) {
+  <app-check-out-sidebar
+    [habitacion]="hab"
+    (close)="checkOutHabitacion.set(null)"
+    (completed)="checkOutHabitacion.set(null)">
+  </app-check-out-sidebar>
+}

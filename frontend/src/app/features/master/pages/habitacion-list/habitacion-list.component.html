@@ -72,7 +72,7 @@
               <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">{{ item.categoriaNombre }}</td>
               <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">{{ item.pisoNombre }}</td>
               <td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">
-                <span class="px-2 py-1 bg-surface-container rounded-md">{{ item.estadoActual }}</span>
+                <span class="px-2 py-1 rounded-md text-xs font-semibold" [ngClass]="getEstadoStyles(item.estadoActual)">{{ item.estadoActual }}</span>
               </td>
               <td class="px-6 py-4 text-center">
                 @if (item.activo) {
@@ -128,7 +128,7 @@
         </button>
       </div>
 
-      <div class="p-6 overflow-y-auto custom-scrollbar">
+      <div class="p-6 overflow-visible">
         <form class="space-y-4">
           <div class="space-y-1.5">
             <label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">

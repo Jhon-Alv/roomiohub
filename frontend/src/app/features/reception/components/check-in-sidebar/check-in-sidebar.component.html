@@ -1,0 +1,81 @@
+<aside class="fixed top-0 right-0 h-full w-[400px] max-w-full bg-surface-container-lowest popover-shadow z-50 flex flex-col animate-slide-in-right transform transition-transform duration-300">
+  <div class="px-6 py-5 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+    <div>
+      <h2 class="font-h2 text-h2 font-bold text-on-surface">Check-in Rápido</h2>
+      <p class="font-label-md text-label-md text-primary font-semibold">{{ habitacion.numero }} - {{ habitacion.categoria }}</p>
+    </div>
+    <button (click)="close.emit()" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <div class="p-6 flex-1 overflow-y-auto space-y-8">
+    <section>
+      <label class="block font-label-md text-label-md text-on-surface mb-2">Huésped Principal</label>
+      <div class="space-y-3">
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant material-symbols-outlined">search</span>
+          <input [(ngModel)]="documento" (ngModelChange)="onDocumentoChange()" class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md transition-colors" placeholder="DNI / Documento" type="text">
+        </div>
+        <input [(ngModel)]="nombres" class="w-full px-4 py-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md transition-colors" placeholder="Nombres Completos" type="text">
+      </div>
+    </section>
+
+    <section class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl border border-outline-variant">
+      <label class="font-label-md text-label-md text-on-surface">Número de Huéspedes</label>
+      <div class="flex items-center gap-4 bg-surface-container-lowest rounded-lg border border-outline-variant px-2 py-1">
+        <button (click)="decrementGuests()" class="w-8 h-8 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined">remove</span></button>
+        <span class="font-h3 text-h3 text-on-surface w-4 text-center">{{ cantidadHuespedes() }}</span>
+        <button (click)="incrementGuests()" class="w-8 h-8 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined">add</span></button>
+      </div>
+    </section>
+
+    <section>
+      <label class="block font-label-md text-label-md text-on-surface mb-3">Duración de la Estancia</label>
+      @if (loadingTarifas()) {
+        <div class="flex flex-wrap gap-3">
+          <span class="px-4 py-2 rounded-lg border border-outline-variant bg-surface-container-low animate-pulse w-24 h-9"></span>
+          <span class="px-4 py-2 rounded-lg border border-outline-variant bg-surface-container-low animate-pulse w-24 h-9"></span>
+          <span class="px-4 py-2 rounded-lg border border-outline-variant bg-surface-container-low animate-pulse w-32 h-9"></span>
+        </div>
+      } @else {
+        <div class="flex flex-wrap gap-3">
+          @for (tarifa of tarifas(); track tarifa.id) {
+            <button (click)="selectTarifa(tarifa.id)" [ngClass]="getChipClass(tarifa.id)" class="px-4 py-2 rounded-lg border font-label-md text-label-md transition-colors">
+              {{ tarifa.planTiempoNombre }}
+            </button>
+          }
+        </div>
+      }
+    </section>
+
+    <section>
+      <label class="block font-label-md text-label-md text-on-surface mb-3">Método de Pago</label>
+      <div class="grid grid-cols-3 gap-3">
+        <button (click)="selectMetodoPago('EFECTIVO')" [ngClass]="getMetodoClass('EFECTIVO')" class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg transition-colors">
+          <span class="material-symbols-outlined">payments</span>
+          <span class="font-label-sm text-label-sm">Efectivo</span>
+        </button>
+        <button (click)="selectMetodoPago('TARJETA')" [ngClass]="getMetodoClass('TARJETA')" class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg transition-colors">
+          <span class="material-symbols-outlined">credit_card</span>
+          <span class="font-label-sm text-label-sm">Tarjeta</span>
+        </button>
+        <button (click)="selectMetodoPago('BILLETERA_DIGITAL')" [ngClass]="getMetodoClass('BILLETERA_DIGITAL')" class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg transition-colors">
+          <span class="material-symbols-outlined">qr_code_scanner</span>
+          <span class="font-label-sm text-label-sm">Yape/Plin</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="p-6 border-t border-outline-variant bg-surface-container-lowest">
+    <div class="flex justify-between items-center mb-6">
+      <span class="font-body-lg text-body-lg text-on-surface-variant">Total a cobrar</span>
+      <span class="font-display text-display text-on-surface font-bold">S/ {{ total() | number:'1.2-2' }}</span>
+    </div>
+    <button (click)="confirmar()" [disabled]="loading()" class="w-full bg-primary text-on-primary font-h3 text-h3 py-4 rounded-xl shadow-sm hover:bg-surface-tint hover:shadow-md transition-all flex justify-center items-center gap-2">
+      <span class="material-symbols-outlined">check_circle</span>
+      Confirmar Check-in
+    </button>
+  </div>
+</aside>

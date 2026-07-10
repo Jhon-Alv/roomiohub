@@ -51,7 +51,9 @@ public interface HabitacionMapper {
 
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "numero", source = "entity.numero")
+    @Mapping(target = "categoriaId", source = "entity.categoria.id")
     @Mapping(target = "categoriaNombre", source = "entity.categoria.nombre")
+    @Mapping(target = "pisoId", source = "entity.piso.id")
     @Mapping(target = "pisoNombre", source = "entity.piso.nombre")
     @Mapping(target = "estadoActual", source = "entity.estadoActual")
     HabitacionDataDto toDataDto(HabitacionEntity entity);

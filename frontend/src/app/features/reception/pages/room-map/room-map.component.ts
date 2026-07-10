@@ -5,11 +5,13 @@ import { RoomMapDto } from '../../../../shared/models/booking.models';
 import { SedeStateService } from '../../../../core/services/sede-state.service';
 import { RoomMapService } from '../../services/room-map.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { CheckInSidebarComponent } from '../../components/check-in-sidebar/check-in-sidebar.component';
+import { CheckOutSidebarComponent } from '../../components/check-out-sidebar/check-out-sidebar.component';
 
 @Component({
   selector: 'app-room-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CheckInSidebarComponent, CheckOutSidebarComponent],
   templateUrl: './room-map.component.html'
 })
 export class RoomMapComponent implements OnInit, OnDestroy {
@@ -21,14 +23,13 @@ export class RoomMapComponent implements OnInit, OnDestroy {
   pisos = signal<{id: string, label: string}[]>([]);
   selectedPisoId = signal<string | null>(null);
 
+  checkInHabitacion = signal<RoomMapDto | null>(null);
+  checkOutHabitacion = signal<RoomMapDto | null>(null);
+
   filteredHabitaciones = computed(() => {
     const pisoId = this.selectedPisoId();
     if (!pisoId) return this.habitaciones();
-    // Wait, HabitacionDto only has pisoNombre, not pisoId. We need to filter by name or update the DTO.
-    // For now, since pisoId is actually the id, we might need to filter by pisoNombre if we find the name from the pisos list.
-    const selectedPisoName = this.pisos().find(p => p.id === pisoId)?.label;
-    if (!selectedPisoName) return this.habitaciones();
-    return this.habitaciones().filter(h => h.piso === selectedPisoName);
+    return this.habitaciones().filter(h => h.pisoId === pisoId);
   });
 
   // Summary logic
@@ -82,16 +83,9 @@ export class RoomMapComponent implements OnInit, OnDestroy {
 
   openRoomAction(habitacion: RoomMapDto) {
     if (habitacion.estadoActual === 'DISPONIBLE') {
-      console.log('Abrir Check-In para:', habitacion.numero);
-      // TODO: Open Check-In Modal
+      this.checkInHabitacion.set(habitacion);
     } else if (habitacion.estadoActual === 'OCUPADO') {
-      console.log('Abrir Check-Out para:', habitacion.numero);
-      // TODO: Open Check-Out Modal
-    } else if (habitacion.estadoActual === 'SUCIO') {
-      console.log('Marcar como limpiando o limpiar para:', habitacion.numero);
-      // TODO: Open Cleaning options
-    } else {
-      console.log('Acción no disponible para este estado:', habitacion.estadoActual);
+      this.checkOutHabitacion.set(habitacion);
     }
   }
 

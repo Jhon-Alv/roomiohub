@@ -19,6 +19,7 @@ public class LoginResponse {
     private String rol;
     private UUID tenantId;
     private UUID sedeId;
+    private String sedeNombre;
     private Boolean flagCambiarPassword;
 
 }

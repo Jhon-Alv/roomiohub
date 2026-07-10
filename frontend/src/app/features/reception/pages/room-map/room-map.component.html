@@ -73,3 +73,19 @@
     }
 </div>
 </div>
+
+@if (checkInHabitacion(); as hab) {
+  <app-check-in-sidebar
+    [habitacion]="hab"
+    (close)="checkInHabitacion.set(null)"
+    (completed)="checkInHabitacion.set(null)">
+  </app-check-in-sidebar>
+}
+
+@if (checkOutHabitacion(); as hab) {
+  <app-check-out-sidebar
+    [habitacion]="hab"
+    (close)="checkOutHabitacion.set(null)"
+    (completed)="checkOutHabitacion.set(null)">
+  </app-check-out-sidebar>
+}

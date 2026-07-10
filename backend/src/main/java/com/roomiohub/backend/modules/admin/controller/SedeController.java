@@ -36,7 +36,7 @@ public class SedeController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION', 'LIMPIEZA')")
     public ResponseEntity<FindSedeResponse> getSedeById(@PathVariable UUID id) {
         FindSedeResponse response = findSedeService.execute(id);
         return ResponseEntity.ok(response);

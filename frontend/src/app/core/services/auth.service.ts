@@ -4,6 +4,7 @@ import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, ChangePasswordRequest, VerifyRucResponse } from '../../shared/models/auth.models';
 import { Router } from '@angular/router';
+import { SedeStateService } from './sede-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private sedeState = inject(SedeStateService);
   
   currentUser = signal<LoginResponse | null>(null);
   
@@ -44,6 +46,17 @@ export class AuthService {
     localStorage.setItem('jwt_token', response.token);
     localStorage.setItem('user_info', JSON.stringify(response));
     this.currentUser.set(response);
+
+    if (response.sedeId) {
+      this.sedeState.setSede({
+        id: response.sedeId,
+        nombre: response.sedeNombre || '',
+        direccion: '',
+        activo: true
+      });
+    } else {
+      this.sedeState.clearSede();
+    }
   }
 
   restoreSession() {

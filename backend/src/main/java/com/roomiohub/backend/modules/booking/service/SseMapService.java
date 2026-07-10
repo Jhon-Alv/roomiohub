@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -57,6 +59,9 @@ public class SseMapService {
 
     public void publishUpdate(UUID sedeId, RoomMapDto updatedRoom) {
         List<SseEmitter> sedeEmitters = emittersMap.get(sedeId);
+        log.info("SSE publishUpdate: sedeId={}, roomId={}, estado={}, emitters={}",
+                sedeId, updatedRoom.getId(), updatedRoom.getEstadoActual(),
+                sedeEmitters != null ? sedeEmitters.size() : 0);
         if (sedeEmitters != null) {
             List<SseEmitter> deadEmitters = new ArrayList<>();
             sedeEmitters.forEach(emitter -> {
@@ -68,5 +73,14 @@ public class SseMapService {
             });
             sedeEmitters.removeAll(deadEmitters);
         }
+    }
+
+    public void schedulePublishAfterCommit(UUID sedeId, RoomMapDto roomMapDto) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                publishUpdate(sedeId, roomMapDto);
+            }
+        });
     }
 }

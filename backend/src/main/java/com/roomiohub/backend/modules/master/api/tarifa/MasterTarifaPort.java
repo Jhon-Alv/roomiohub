@@ -44,4 +44,16 @@ public class MasterTarifaPort implements IMasterTarifaPort {
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Promoción no válida para esta tarifa"));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void validateTarifaBelongsToCategoria(UUID tarifaId, UUID categoriaId) {
+        TarifaEntity tarifa = tarifaRepository.findById(tarifaId)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Tarifa no encontrada"));
+
+        if (!tarifa.getCategoria().getId().equals(categoriaId)) {
+            throw new RestException(HttpStatus.BAD_REQUEST,
+                    "La tarifa no aplica a la categoría de la habitación");
+        }
+    }
+
 }

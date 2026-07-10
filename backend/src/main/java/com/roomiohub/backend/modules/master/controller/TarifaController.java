@@ -36,7 +36,7 @@ public class TarifaController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION')")
     public ResponseEntity<List<FindTarifasResponse>> obtenerTarifas(
             @RequestParam(value = "categoriaId", required = false) UUID categoriaId,
             @RequestParam(value = "planTiempoId", required = false) UUID planTiempoId,

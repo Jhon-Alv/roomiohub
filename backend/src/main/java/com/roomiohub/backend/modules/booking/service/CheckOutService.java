@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -35,7 +33,8 @@ public class CheckOutService {
 
     @Transactional
     public CheckOutResponse execute(UUID habitacionId, CheckOutRequest request) {
-        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+
+        UUID sedeId = TenantContextHolder.resolveSedeId(request.getSedeId());
 
         ReservaEntity reserva = reservaRepository.findByHabitacionIdAndFechaSalidaRealIsNull(habitacionId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "No hay una reserva activa para esta habitación"));
@@ -46,7 +45,7 @@ public class CheckOutService {
             throw new RestException(HttpStatus.BAD_REQUEST, "Solo se puede realizar el check-out cuando la habitación está en estado OCUPADO");
         }
 
-        if (!reserva.getSedeId().equals(request.getSedeId())) {
+        if (!reserva.getSedeId().equals(sedeId)) {
             throw new RestException(HttpStatus.FORBIDDEN, "La reserva no pertenece a esta sede");
         }
 
@@ -58,7 +57,7 @@ public class CheckOutService {
 
         habitacionData.setEstadoActual(EstadoHabitacion.SUCIO);
         RoomMapDto roomMapDto = roomMapMapper.toDto(habitacionData);
-        sseMapService.publishUpdate(request.getSedeId(), roomMapDto);
+        sseMapService.schedulePublishAfterCommit(sedeId, roomMapDto);
 
         return reservaMapper.toCheckOutResponse(reserva);
     }

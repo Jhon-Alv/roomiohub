@@ -36,7 +36,16 @@ export class SedeSelectorComponent implements OnInit {
     return user?.rol === 'ROLE_ADMIN' || user?.rol === 'ADMIN';
   });
 
+  isRestrictedUser = computed(() => {
+    return !!this.authService.currentUser()?.sedeId;
+  });
+
   ngOnInit() {
+    if (this.isRestrictedUser()) {
+      this.router.navigate(['/reception']);
+      return;
+    }
+
     this.sedeState.clearSede();
     this.loadSedes();
   }

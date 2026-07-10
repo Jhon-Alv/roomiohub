@@ -10,6 +10,11 @@ export const publicGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/gateway']);
+  const user = authService.currentUser();
+  if (user?.sedeId) {
+    router.navigate(['/reception']);
+  } else {
+    router.navigate(['/gateway']);
+  }
   return false;
 };

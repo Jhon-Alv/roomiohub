@@ -11,7 +11,9 @@ import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 public class HabitacionDataDto {
     private UUID id;
     private String numero;
+    private UUID categoriaId;
     private String categoriaNombre;
+    private UUID pisoId;
     private String pisoNombre;
     private EstadoHabitacion estadoActual;
 }

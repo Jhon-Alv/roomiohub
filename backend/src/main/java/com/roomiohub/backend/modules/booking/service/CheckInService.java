@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -50,6 +49,7 @@ public class CheckInService {
 
         UUID tenantId = TenantContextHolder.getRequiredTenantId();
         UUID usuarioId = UserContextHolder.getRequiredUserId();
+        UUID sedeId = TenantContextHolder.resolveSedeId(request.getSedeId());
 
         ClienteEntity cliente = clienteRepository.findByNumeroDocumentoAndTenantId(request.getNumeroDocumento(), tenantId)
                 .orElseGet(() -> {
@@ -57,10 +57,17 @@ public class CheckInService {
                             .numeroDocumento(request.getNumeroDocumento())
                             .nombres(request.getNombresCliente())
                             .build();
+                    nuevoCliente.setTenantId(tenantId);
                     return clienteRepository.persist(nuevoCliente);
                 });
 
+        if (!cliente.getNombres().equals(request.getNombresCliente())) {
+            cliente.setNombres(request.getNombresCliente());
+            clienteRepository.update(cliente);
+        }
+
         Integer horas = masterTarifaPort.getHorasByTarifaId(request.getTarifaId());
+        masterTarifaPort.validateTarifaBelongsToCategoria(request.getTarifaId(), habitacionSeleccionada.getCategoriaId());
         BigDecimal montoSubtotal = masterTarifaPort.getPrecioBaseByTarifaId(request.getTarifaId());
         BigDecimal precioPromocional = null;
 
@@ -69,7 +76,7 @@ public class CheckInService {
         }
 
         ReservaEntity reserva = ReservaEntity.builder()
-                .sedeId(request.getSedeId())
+                .sedeId(sedeId)
                 .habitacionId(habitacionId)
                 .usuarioIngresoId(usuarioId)
                 .clienteId(cliente.getId())
@@ -79,6 +86,7 @@ public class CheckInService {
                 .metodoPago(request.getMetodoPago())
                 .build();
 
+        reserva.setTenantId(tenantId);
         reserva.iniciarEstadia(horas, montoSubtotal, precioPromocional);
 
         ReservaEntity savedReserva = reservaRepository.persist(reserva);
@@ -87,7 +95,7 @@ public class CheckInService {
 
         habitacionSeleccionada.setEstadoActual(EstadoHabitacion.OCUPADO);
         RoomMapDto roomMapDto = roomMapMapper.toDto(habitacionSeleccionada);
-        sseMapService.publishUpdate(request.getSedeId(), roomMapDto);
+        sseMapService.schedulePublishAfterCommit(sedeId, roomMapDto);
 
         return reservaMapper.toCheckInResponse(savedReserva);
     }

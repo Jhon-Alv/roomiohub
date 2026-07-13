@@ -1,4 +1,4 @@
-package com.roomiohub.backend.modules.booking.dto.response;
+package com.roomiohub.backend.shared.dto;
 
 import lombok.Builder;
 import lombok.Data;

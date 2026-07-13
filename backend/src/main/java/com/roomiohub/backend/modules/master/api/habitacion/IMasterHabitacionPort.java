@@ -19,5 +19,5 @@ public interface IMasterHabitacionPort {
     /**
      * Actualiza el estado de la habitación.
      */
-    void updateEstadoHabitacion(UUID habitacionId, EstadoHabitacion nuevoEstado);
+    void updateEstadoHabitacion(UUID habitacionId, EstadoHabitacion nuevoEstado, UUID usuarioId, String observacion);
 }

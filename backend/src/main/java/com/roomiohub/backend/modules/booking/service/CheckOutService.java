@@ -3,13 +3,14 @@ package com.roomiohub.backend.modules.booking.service;
 import com.roomiohub.backend.modules.master.api.dto.HabitacionDataDto;
 import com.roomiohub.backend.modules.booking.dto.request.CheckOutRequest;
 import com.roomiohub.backend.modules.booking.dto.response.CheckOutResponse;
-import com.roomiohub.backend.modules.booking.dto.response.RoomMapDto;
-import com.roomiohub.backend.modules.booking.mapper.RoomMapMapper;
+import com.roomiohub.backend.shared.dto.RoomMapDto;
+import com.roomiohub.backend.shared.mapper.RoomMapMapper;
 import com.roomiohub.backend.modules.booking.mapper.ReservaMapper;
 import com.roomiohub.backend.modules.booking.model.ReservaEntity;
 import com.roomiohub.backend.modules.booking.repository.ReservaRepository;
 import com.roomiohub.backend.modules.master.api.habitacion.MasterHabitacionPort;
 import com.roomiohub.backend.shared.exceptions.RestException;
+import com.roomiohub.backend.security.identity.UserContextHolder;
 import com.roomiohub.backend.security.tenant.TenantContextHolder;
 import com.roomiohub.backend.shared.enums.EstadoHabitacion;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class CheckOutService {
     public CheckOutResponse execute(UUID habitacionId, CheckOutRequest request) {
 
         UUID sedeId = TenantContextHolder.resolveSedeId(request.getSedeId());
+        UUID usuarioId = UserContextHolder.getRequiredUserId();
 
         ReservaEntity reserva = reservaRepository.findByHabitacionIdAndFechaSalidaRealIsNull(habitacionId)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "No hay una reserva activa para esta habitación"));
@@ -53,7 +55,7 @@ public class CheckOutService {
 
         reservaRepository.update(reserva);
 
-        masterHabitacionPort.updateEstadoHabitacion(habitacionId, EstadoHabitacion.SUCIO);
+        masterHabitacionPort.updateEstadoHabitacion(habitacionId, EstadoHabitacion.SUCIO, usuarioId, null);
 
         habitacionData.setEstadoActual(EstadoHabitacion.SUCIO);
         RoomMapDto roomMapDto = roomMapMapper.toDto(habitacionData);

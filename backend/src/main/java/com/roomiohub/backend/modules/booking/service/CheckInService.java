@@ -2,8 +2,8 @@ package com.roomiohub.backend.modules.booking.service;
 
 import com.roomiohub.backend.modules.booking.dto.request.CheckInRequest;
 import com.roomiohub.backend.modules.booking.dto.response.CheckInResponse;
-import com.roomiohub.backend.modules.booking.dto.response.RoomMapDto;
-import com.roomiohub.backend.modules.booking.mapper.RoomMapMapper;
+import com.roomiohub.backend.shared.dto.RoomMapDto;
+import com.roomiohub.backend.shared.mapper.RoomMapMapper;
 import com.roomiohub.backend.modules.booking.mapper.ReservaMapper;
 import com.roomiohub.backend.modules.booking.model.ClienteEntity;
 import com.roomiohub.backend.modules.booking.model.ReservaEntity;
@@ -91,7 +91,7 @@ public class CheckInService {
 
         ReservaEntity savedReserva = reservaRepository.persist(reserva);
 
-        masterHabitacionPort.updateEstadoHabitacion(habitacionId, EstadoHabitacion.OCUPADO);
+        masterHabitacionPort.updateEstadoHabitacion(habitacionId, EstadoHabitacion.OCUPADO, usuarioId, null);
 
         habitacionSeleccionada.setEstadoActual(EstadoHabitacion.OCUPADO);
         RoomMapDto roomMapDto = roomMapMapper.toDto(habitacionSeleccionada);

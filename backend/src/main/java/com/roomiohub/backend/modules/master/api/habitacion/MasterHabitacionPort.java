@@ -57,6 +57,7 @@ public class MasterHabitacionPort implements IMasterHabitacionPort {
                 .estadoNuevo(nuevoEstado)
                 .observacion(observacion)
                 .build();
+        log.setTenantId(habitacion.getTenantId());
         logEstadoHabitacionRepository.persist(log);
     }
 }

@@ -1,6 +1,6 @@
 package com.roomiohub.backend.modules.booking.model;
 
-import com.roomiohub.backend.shared.persistence.TenantBaseEntity;
+import com.roomiohub.backend.shared.persistence.TenantEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "reservas")
-public class ReservaEntity extends TenantBaseEntity {
+public class ReservaEntity extends TenantEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

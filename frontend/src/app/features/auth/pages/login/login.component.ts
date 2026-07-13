@@ -83,7 +83,8 @@ export class LoginComponent {
               next: (sede) => {
                 this.sedeState.setSede(sede);
                 this.isLoading.set(false);
-                this.router.navigate(['/']);
+                const rol = (response.rol || '').replace('ROLE_', '');
+                this.router.navigate([rol === 'LIMPIEZA' ? '/cleaning' : '/']);
               },
               error: () => {
                 this.isLoading.set(false);

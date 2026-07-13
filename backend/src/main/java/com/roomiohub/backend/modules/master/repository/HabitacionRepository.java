@@ -5,6 +5,7 @@ import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public interface HabitacionRepository extends BaseJpaRepository<HabitacionEntity
 
     Optional<HabitacionEntity> findByIdAndTenantId(UUID id, UUID tenantId);
 
-    java.util.List<HabitacionEntity> findByTenantIdAndSedeIdAndActivoTrue(UUID tenantId, UUID sedeId);
+    List<HabitacionEntity> findByTenantIdAndSedeIdAndActivoTrue(UUID tenantId, UUID sedeId);
 
     boolean existsByNumeroAndSedeId(String numero, UUID sedeId);
 

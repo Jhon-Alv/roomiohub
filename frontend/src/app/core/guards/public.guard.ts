@@ -12,7 +12,8 @@ export const publicGuard: CanActivateFn = () => {
 
   const user = authService.currentUser();
   if (user?.sedeId) {
-    router.navigate(['/reception']);
+    const rol = (user.rol || '').replace('ROLE_', '');
+    router.navigate([rol === 'LIMPIEZA' ? '/cleaning' : '/reception']);
   } else {
     router.navigate(['/gateway']);
   }

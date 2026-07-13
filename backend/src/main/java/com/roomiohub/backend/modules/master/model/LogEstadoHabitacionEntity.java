@@ -1,7 +1,7 @@
 package com.roomiohub.backend.modules.master.model;
 
 import com.roomiohub.backend.shared.enums.EstadoHabitacion;
-import com.roomiohub.backend.shared.persistence.TenantBaseEntity;
+import com.roomiohub.backend.shared.persistence.TenantEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "log_estados_habitacion")
-public class LogEstadoHabitacionEntity extends TenantBaseEntity {
+public class LogEstadoHabitacionEntity extends TenantEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

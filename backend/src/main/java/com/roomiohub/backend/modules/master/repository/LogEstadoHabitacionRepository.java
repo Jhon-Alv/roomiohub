@@ -22,8 +22,8 @@ public interface LogEstadoHabitacionRepository extends BaseJpaRepository<LogEsta
 
     @Query("SELECT l FROM LogEstadoHabitacionEntity l " +
            "WHERE l.sedeId = :sedeId AND l.habitacionId IN :habitacionIds " +
-           "AND l.id IN (SELECT MAX(l2.id) FROM LogEstadoHabitacionEntity l2 " +
-           "             WHERE l2.habitacionId = l.habitacionId GROUP BY l2.habitacionId)")
+           "AND l.fechaCambio IN (SELECT MAX(l2.fechaCambio) FROM LogEstadoHabitacionEntity l2 " +
+           "                     WHERE l2.habitacionId = l.habitacionId GROUP BY l2.habitacionId)")
     List<LogEstadoHabitacionEntity> findUltimoCambioByHabitacionIds(@Param("sedeId") UUID sedeId,
                                                                      @Param("habitacionIds") List<UUID> habitacionIds);
 }

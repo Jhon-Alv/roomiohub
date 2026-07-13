@@ -36,9 +36,9 @@
         <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sucias</span>
         <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ sucias() }}</span>
     </div>
-    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col border-l-4 border-l-[#64748b]">
-        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Mantenimiento</span>
-        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ mantenimiento() }}</span>
+    <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant soft-shadow flex flex-col border-l-4 border-l-[#eab308]">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Limpieza</span>
+        <span class="font-h2 text-h2 font-bold text-on-surface mt-1">{{ limpieza() }}</span>
     </div>
 </div>
 
@@ -46,22 +46,22 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
     @for (habitacion of filteredHabitaciones(); track habitacion.id) {
         <div (click)="openRoomAction(habitacion)"
-             class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 soft-shadow flex flex-col hover:border-primary transition-colors cursor-pointer group relative overflow-hidden min-h-[140px]"
+             class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 soft-shadow flex flex-col hover:border-primary transition-colors cursor-pointer group relative overflow-hidden min-h-35"
              [ngClass]="habitacion.estadoActual === 'MANTENIMIENTO' ? 'bg-surface/50 cursor-not-allowed opacity-80' : ''">
             
             <div class="absolute top-0 left-0 w-full h-1" [ngClass]="getBorderClass(habitacion.estadoActual)"></div>
             
-            <div class="flex justify-between items-start mb-4">
-                <h3 class="font-h2 text-h2 font-bold text-on-surface">{{ habitacion.numero }}</h3>
-                <span class="px-2 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1" [ngClass]="getBadgeClass(habitacion.estadoActual)">
+            <div class="flex justify-between items-start mb-4 gap-2">
+                <h3 class="font-h3 text-h3 text-on-surface min-w-0 truncate">{{ habitacion.numero }}</h3>
+                <span class="px-2 py-1 rounded-full text-label-sm flex items-center gap-1 shrink-0 whitespace-nowrap" [ngClass]="getBadgeClass(habitacion.estadoActual)">
                     <span class="material-symbols-outlined text-[14px]">{{ getIcon(habitacion.estadoActual) }}</span>
-                    {{ habitacion.estadoActual }}
+                    {{ formatEstado(habitacion.estadoActual) }}
                 </span>
             </div>
             
             <div class="mt-auto flex justify-between items-end pt-2 border-t border-outline-variant/50">
                 <div class="flex flex-col">
-                    <span class="font-body-sm text-body-sm text-on-surface-variant">{{ habitacion.categoria }}</span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant truncate">{{ habitacion.categoria }}</span>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { publicGuard } from './core/guards/public.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -25,22 +26,23 @@ export const routes: Routes = [
       },
       {
         path: 'users',
+        canActivate: [roleGuard(['ADMIN'])],
         loadComponent: () => import('./features/users/pages/user-management/user-management.component').then(m => m.UserManagementComponent)
       },
-      // Ejemplos de Lazy Loading por Feature (requerirán sus propios archivos .routes.ts o cargar componentes directamente)
       {
         path: 'master',
+        canActivate: [roleGuard(['ADMIN'])],
         loadChildren: () => import('./features/master/master.routes').then(m => m.masterRoutes)
       },
-      /*
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
-      },
-      */
       {
         path: 'reception',
+        canActivate: [roleGuard(['ADMIN', 'RECEPCION'])],
         loadChildren: () => import('./features/reception/reception.routes').then(m => m.RECEPTION_ROUTES)
+      },
+      {
+        path: 'cleaning',
+        canActivate: [roleGuard(['ADMIN', 'RECEPCION', 'LIMPIEZA'])],
+        loadChildren: () => import('./features/cleaning/cleaning.routes').then(m => m.CLEANING_ROUTES)
       },
       /*
       {

@@ -1,6 +1,6 @@
-package com.roomiohub.backend.modules.booking.mapper;
+package com.roomiohub.backend.modules.cleaning.mapper;
 
-import com.roomiohub.backend.modules.booking.dto.response.RoomMapDto;
+import com.roomiohub.backend.modules.cleaning.dto.CleaningRoomDto;
 import com.roomiohub.backend.modules.master.api.dto.HabitacionDataDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,7 +9,7 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface RoomMapMapper {
+public interface CleaningMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "numero", target = "numero")
@@ -18,7 +18,7 @@ public interface RoomMapMapper {
     @Mapping(source = "pisoId", target = "pisoId")
     @Mapping(source = "pisoNombre", target = "piso")
     @Mapping(source = "estadoActual", target = "estadoActual")
-    RoomMapDto toDto(HabitacionDataDto source);
+    CleaningRoomDto toDto(HabitacionDataDto source);
 
-    List<RoomMapDto> toDtoList(List<HabitacionDataDto> source);
+    List<CleaningRoomDto> toDtoList(List<HabitacionDataDto> source);
 }

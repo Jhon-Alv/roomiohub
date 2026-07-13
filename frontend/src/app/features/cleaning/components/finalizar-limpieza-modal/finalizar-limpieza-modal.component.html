@@ -1,0 +1,14 @@
+<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+  <div class="bg-surface rounded-xl shadow-lg w-full max-w-md p-6">
+    <h2 class="font-h2 text-h2 text-on-surface mb-4">Terminar Limpieza</h2>
+    <p class="font-body-md text-on-surface-variant mb-4">¿Marcar la {{ habitacion.numero }} - {{ habitacion.categoria }} como limpia y disponible?</p>
+    <div class="mb-6">
+      <label class="block font-label-md text-on-surface mb-2">Observaciones (Opcional)</label>
+      <textarea [(ngModel)]="observacion" class="w-full border border-outline-variant rounded-lg p-3 text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest" placeholder="Añade detalles de la limpieza..." rows="3"></textarea>
+    </div>
+    <div class="flex justify-end gap-3">
+      <button (click)="close.emit()" class="px-4 py-2 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors border border-outline-variant">Cancelar</button>
+      <button (click)="confirmar()" [disabled]="loading()" class="px-4 py-2 rounded-lg font-label-md bg-yellow-500 text-white hover:bg-yellow-600 transition-colors">Marcar Disponible</button>
+    </div>
+  </div>
+</div>

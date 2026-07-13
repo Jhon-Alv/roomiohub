@@ -1,0 +1,100 @@
+<div class="p-container-padding max-w-7xl mx-auto space-y-6 min-h-150">
+  <div class="max-w-7xl mx-auto flex flex-col h-full">
+    <header class="mb-6">
+      <h2 class="font-h1 text-h1 font-bold text-on-surface">Cola de Tareas</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-1">Gestión de limpieza y mantenimiento de habitaciones</p>
+    </header>
+
+    <div class="grow grid grid-cols-1 md:grid-cols-3 gap-6 h-full pb-10">
+      <!-- Sucio -->
+      <section class="flex flex-col h-full gap-4">
+        <h3 class="font-h3 text-h3 font-semibold text-on-surface flex items-center gap-2 pb-2">
+          <span class="w-2 h-2 rounded-full bg-orange-500"></span> Sucio
+        </h3>
+        <div class="flex flex-col gap-3">
+          @for (room of sucias(); track room.id) {
+            <button (click)="iniciarModal.set(room)"
+              class="text-left w-full bg-surface-container-lowest border border-outline-variant border-l-4 border-l-orange-500 rounded-lg p-4 shadow-sm flex flex-col gap-3 hover:bg-surface-container-low transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-orange-600">cleaning_services</span>
+                </div>
+                <div class="grow">
+                  <h4 class="text-label-md text-on-surface">Habitación {{ room.numero }} - {{ room.categoria }}</h4>
+                  <p class="font-body-sm text-label-sm text-on-surface-variant">Sucia {{ tiempoRelativo(room.fechaUltimoCambio) }}</p>
+                </div>
+              </div>
+            </button>
+          } @empty {
+            <p class="font-body-sm text-on-surface-variant text-center py-20">No hay habitaciones sucias</p>
+          }
+        </div>
+      </section>
+
+      <!-- En Limpieza -->
+      <section class="flex flex-col h-full gap-4">
+        <h3 class="font-h3 text-h3 font-semibold text-on-surface flex items-center gap-2 pb-2">
+          <span class="w-2 h-2 rounded-full bg-yellow-400"></span> En Limpieza
+        </h3>
+        <div class="flex flex-col gap-3">
+          @for (room of enLimpieza(); track room.id) {
+            <button (click)="finalizarModal.set(room)"
+              class="text-left w-full bg-surface-container-lowest border border-outline-variant border-l-4 border-l-yellow-400 rounded-lg p-4 shadow-sm flex flex-col gap-3 hover:bg-surface-container-low transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-yellow-700">mop</span>
+                </div>
+                <div class="grow">
+                  <h4 class="text-label-md text-on-surface">Habitación {{ room.numero }} - {{ room.categoria }}</h4>
+                  <p class="font-body-sm text-label-sm text-on-surface-variant">En limpieza {{ tiempoRelativo(room.fechaUltimoCambio) }}</p>
+                </div>
+              </div>
+            </button>
+          } @empty {
+            <p class="font-body-sm text-on-surface-variant text-center py-20">No hay habitaciones en limpieza</p>
+          }
+        </div>
+      </section>
+
+      <!-- Ocupado -->
+      <section class="flex flex-col h-full gap-4">
+        <h3 class="font-h3 text-h3 font-semibold text-on-surface flex items-center gap-2 pb-2">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span> Ocupado
+        </h3>
+        <div class="flex flex-col gap-3">
+          @for (room of ocupadas(); track room.id) {
+            <div class="w-full bg-surface-container-lowest border border-outline-variant border-l-4 border-l-red-500 rounded-lg p-4 shadow-sm flex flex-col gap-3 cursor-default">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-red-600">person</span>
+                </div>
+                <div class="grow">
+                  <h4 class="text-label-md text-on-surface">Habitación {{ room.numero }} - {{ room.categoria }}</h4>
+                  <p class="font-body-sm text-label-sm text-red-600">Evitar ruidos excesivos</p>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="font-body-sm text-on-surface-variant text-center py-20">No hay habitaciones ocupadas</p>
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+@if (iniciarModal(); as room) {
+  <app-iniciar-limpieza-modal
+    [habitacion]="room"
+    (close)="iniciarModal.set(null)"
+    (completed)="iniciarModal.set(null)">
+  </app-iniciar-limpieza-modal>
+}
+
+@if (finalizarModal(); as room) {
+  <app-finalizar-limpieza-modal
+    [habitacion]="room"
+    (close)="finalizarModal.set(null)"
+    (completed)="finalizarModal.set(null)">
+  </app-finalizar-limpieza-modal>
+}

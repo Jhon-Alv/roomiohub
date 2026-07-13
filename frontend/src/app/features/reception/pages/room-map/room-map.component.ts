@@ -37,7 +37,7 @@ export class RoomMapComponent implements OnInit, OnDestroy {
   disponibles = computed(() => this.habitaciones().filter(h => h.estadoActual === 'DISPONIBLE').length);
   ocupadas = computed(() => this.habitaciones().filter(h => h.estadoActual === 'OCUPADO').length);
   sucias = computed(() => this.habitaciones().filter(h => h.estadoActual === 'SUCIO').length);
-  mantenimiento = computed(() => this.habitaciones().filter(h => h.estadoActual === 'MANTENIMIENTO').length);
+  limpieza = computed(() => this.habitaciones().filter(h => h.estadoActual === 'EN_LIMPIEZA').length);
 
   ngOnInit() {
     this.loadCatalogs();
@@ -108,6 +108,17 @@ export class RoomMapComponent implements OnInit, OnDestroy {
       case 'EN_LIMPIEZA': return 'cleaning_services';
       case 'MANTENIMIENTO': return 'build';
       default: return 'help';
+    }
+  }
+
+  formatEstado(estado: string): string {
+    switch (estado) {
+      case 'DISPONIBLE': return 'Disponible';
+      case 'OCUPADO': return 'Ocupado';
+      case 'SUCIO': return 'Sucio';
+      case 'EN_LIMPIEZA': return 'En Limpieza';
+      case 'MANTENIMIENTO': return 'Mantenimiento';
+      default: return estado;
     }
   }
 }

@@ -1,6 +1,6 @@
 package com.roomiohub.backend.modules.booking.model;
 
-import com.roomiohub.backend.shared.persistence.TenantBaseEntity;
+import com.roomiohub.backend.shared.persistence.TenantEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "clientes")
-public class ClienteEntity extends TenantBaseEntity {
+public class ClienteEntity extends TenantEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

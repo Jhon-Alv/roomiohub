@@ -20,7 +20,7 @@
       }
 
       @if (hasAdminRole()) {
-        <a class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors duration-200" href="#">
+        <a class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors duration-200" routerLink="/metrics" routerLinkActive="bg-surface-container-high text-on-surface font-medium">
           <span class="material-symbols-outlined">bar_chart_4_bars</span>
           <span class="font-body-md text-body-md">Dashboard Métricas</span>
         </a>

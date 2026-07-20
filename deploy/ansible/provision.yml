@@ -1,0 +1,408 @@
+---
+# ============================================================
+# playbooks/provision.yml
+# Provisionamiento del servidor EC2 para RoomioHub
+# Uso: ansible-playbook -i inventory.yml provision.yml \
+#        -e "app_db_password=$DB_PASS" -e "app_jwt_secret=$JWT_SECRET"
+# ============================================================
+
+- name: Provisionar servidor RoomioHub
+  hosts: production
+  become: true
+  vars:
+    app_db_name: "roomiohub_db"
+    app_db_user: "roomiohub_app"
+    app_db_password: "{{ lookup('env', 'APP_DB_PASSWORD') }}"
+    app_jwt_secret: "{{ lookup('env', 'JWT_SECRET_KEY') }}"
+
+    app_base: /opt/app
+    app_backend_dir: /opt/app/backend
+    app_frontend_dir: /opt/app/frontend/dist
+
+    swap_size_mb: 2048
+    swap_path: /swapfile
+
+    init_sql_local: "{{ playbook_dir }}/../../init.sql"
+
+  tasks:
+    # ============================================================
+    # 1. ACTUALIZAR SISTEMA E INSTALAR PAQUETES BASE
+    # ============================================================
+    - name: Actualizar todos los paquetes del sistema
+      dnf:
+        name: "*"
+        state: latest
+      tags: [system]
+
+    - name: Instalar utilidades base
+      dnf:
+        name:
+          - unzip
+          - tar
+          - wget
+          - git
+          - python3-psycopg2
+        state: present
+      tags: [system]
+
+    # ============================================================
+    # 2. CREAR SWAP (t3.micro: solo 1 GB RAM)
+    # ============================================================
+    - name: Verificar si el archivo de swap ya existe
+      stat:
+        path: "{{ swap_path }}"
+      register: swap_file
+
+    - name: Crear archivo de swap de {{ swap_size_mb }} MB
+      command: >
+        dd if=/dev/zero of={{ swap_path }}
+        bs=1M count={{ swap_size_mb }}
+      when: not swap_file.stat.exists
+      args:
+        creates: "{{ swap_path }}"
+
+    - name: Establecer permisos del swap
+      file:
+        path: "{{ swap_path }}"
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Formatear como swap
+      command: mkswap {{ swap_path }}
+      when: not swap_file.stat.exists
+
+    - name: Activar swap
+      command: swapon {{ swap_path }}
+      when: not swap_file.stat.exists
+
+    - name: Hacer swap permanente en /etc/fstab
+      mount:
+        path: none
+        src: "{{ swap_path }}"
+        fstype: swap
+        opts: sw
+        state: present
+
+    # ============================================================
+    # 3. INSTALAR JAVA 21 (Amazon Corretto)
+    # ============================================================
+    - name: Instalar Java 21 (Amazon Corretto)
+      dnf:
+        name: java-21-amazon-corretto
+        state: present
+      tags: [java]
+
+    # ============================================================
+    # 4. INSTALAR Y CONFIGURAR PostgreSQL 16
+    # ============================================================
+    - name: Instalar PostgreSQL 16
+      dnf:
+        name:
+          - postgresql16
+          - postgresql16-server
+        state: present
+      tags: [postgres]
+
+    - name: Inicializar el cluster de PostgreSQL (primera vez)
+      command: postgresql-setup --initdb
+      args:
+        creates: /var/lib/pgsql/data/pg_hba.conf
+      tags: [postgres]
+
+    - name: Asegurar que PostgreSQL solo escuche en localhost
+      lineinfile:
+        path: /var/lib/pgsql/data/postgresql.conf
+        regexp: "^#?listen_addresses"
+        line: "listen_addresses = 'localhost'"
+        state: present
+      notify: restart postgresql
+      tags: [postgres]
+
+    - name: Reducir shared_buffers (64 MB) — ahorro de RAM para t3.micro
+      lineinfile:
+        path: /var/lib/pgsql/data/postgresql.conf
+        regexp: "^#?shared_buffers"
+        line: "shared_buffers = 64MB"
+        state: present
+      notify: restart postgresql
+      tags: [postgres]
+
+    - name: Reducir work_mem (2 MB) — ahorro de RAM
+      lineinfile:
+        path: /var/lib/pgsql/data/postgresql.conf
+        regexp: "^#?work_mem"
+        line: "work_mem = 2MB"
+        state: present
+      notify: restart postgresql
+      tags: [postgres]
+
+    - name: Iniciar y habilitar PostgreSQL
+      systemd:
+        name: postgresql
+        state: started
+        enabled: true
+      tags: [postgres]
+
+    - name: Crear base de datos de la aplicación
+      postgresql_db:
+        name: "{{ app_db_name }}"
+        encoding: UTF-8
+      become: true
+      become_user: postgres
+      tags: [postgres]
+
+    - name: Crear usuario de la aplicación
+      postgresql_user:
+        name: "{{ app_db_user }}"
+        password: "{{ app_db_password }}"
+        encrypted: true
+        state: present
+      become: true
+      become_user: postgres
+      tags: [postgres]
+
+    - name: Otorgar privilegios al usuario sobre la base de datos
+      postgresql_privs:
+        db: "{{ app_db_name }}"
+        privs: ALL
+        type: database
+        roles: "{{ app_db_user }}"
+      become: true
+      become_user: postgres
+      tags: [postgres]
+
+    # ============================================================
+    # 5. INSTALAR CADDY (binary directo — no en repos de AL2023)
+    # ============================================================
+    - name: Descargar Caddy (binary estático)
+      get_url:
+        url: "https://caddyserver.com/api/download?os=linux&arch=amd64"
+        dest: /usr/local/bin/caddy
+        mode: "0755"
+      tags: [caddy]
+
+    - name: Crear grupo caddy
+      group:
+        name: caddy
+        system: true
+      tags: [caddy]
+
+    - name: Crear usuario caddy
+      user:
+        name: caddy
+        system: true
+        group: caddy
+        home: /var/lib/caddy
+        create_home: true
+      tags: [caddy]
+
+    - name: Crear directorios de Caddy
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: caddy
+        group: caddy
+        mode: "0750"
+      loop:
+        - /etc/caddy
+        - /var/log/caddy
+        - /var/lib/caddy/.local/share/caddy
+      tags: [caddy]
+
+    - name: Crear servicio systemd para Caddy
+      copy:
+        content: |
+          [Unit]
+          Description=Caddy
+          Documentation=https://caddyserver.com/docs/
+          After=network.target network-online.target
+          Requires=network-online.target
+
+          [Service]
+          Type=notify
+          User=caddy
+          Group=caddy
+          ExecStart=/usr/local/bin/caddy run --environ --config /etc/caddy/Caddyfile
+          ExecReload=/usr/local/bin/caddy reload --config /etc/caddy/Caddyfile
+          TimeoutStopSec=5s
+          LimitNOFILE=1048576
+          PrivateTmp=true
+          ProtectSystem=full
+          AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/caddy.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: daemon-reload
+      tags: [caddy]
+
+    - name: Desplegar Caddyfile
+      template:
+        src: templates/Caddyfile.j2
+        dest: /etc/caddy/Caddyfile
+        owner: root
+        group: caddy
+        mode: "0640"
+      notify: reload caddy
+      tags: [caddy]
+
+    - name: Iniciar y habilitar Caddy
+      systemd:
+        name: caddy
+        state: started
+        enabled: true
+        daemon_reload: true
+      tags: [caddy]
+
+    # ============================================================
+    # 6. CREAR USUARIO Y DIRECTORIOS DE LA APP
+    # ============================================================
+    - name: Crear usuario del sistema para ejecutar la app
+      user:
+        name: app
+        system: true
+        shell: /sbin/nologin
+        home: "{{ app_base }}"
+        create_home: false
+      tags: [app]
+
+    - name: Crear estructura de directorios
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: app
+        group: app
+        mode: "0755"
+      loop:
+        - "{{ app_backend_dir }}"
+        - "{{ app_frontend_dir }}"
+      tags: [app]
+
+    # ============================================================
+    # 7. ARCHIVO DE ENTORNO PARA EL BACKEND
+    # ============================================================
+    - name: Crear archivo .env para el backend
+      copy:
+        content: |
+          BD_ROOMIOHUB_URL=jdbc:postgresql://localhost:5432/{{ app_db_name }}?timezone=America/Lima
+          BD_ROOMIOHUB_USERNAME={{ app_db_user }}
+          BD_ROOMIOHUB_PASSWORD={{ app_db_password }}
+          JWT_SECRET_KEY={{ app_jwt_secret }}
+          CORS_ALLOWED_ORIGINS=http://TU_IP_O_DOMINIO_AQUI
+        dest: "{{ app_backend_dir }}/.env"
+        owner: app
+        group: app
+        mode: "0600"
+      tags: [app]
+
+    # ============================================================
+    # 8. CREAR SERVICIO SYSTEMD PARA EL BACKEND
+    # ============================================================
+    - name: Crear unit de systemd para el backend
+      copy:
+        content: |
+          [Unit]
+          Description=RoomioHub Backend (Spring Boot)
+          After=network.target postgresql16.service
+
+          [Service]
+          Type=simple
+          User=app
+          Group=app
+          WorkingDirectory={{ app_backend_dir }}
+          EnvironmentFile={{ app_backend_dir }}/.env
+          ExecStart=/usr/bin/java -Xmx256m -Xms256m -jar {{ app_backend_dir }}/app.jar
+          ExecStop=/bin/kill -15 $MAINPID
+          Restart=on-failure
+          RestartSec=10
+          SuccessExitStatus=143
+
+          MemoryHigh=384M
+          MemoryMax=512M
+
+          NoNewPrivileges=true
+          ProtectSystem=strict
+          ProtectHome=true
+          PrivateTmp=true
+          ReadWritePaths={{ app_backend_dir }}
+          ReadOnlyPaths=/etc/ssl/certs
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/app-backend.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: daemon-reload
+      tags: [app]
+
+    - name: Dejar el servicio DETENIDO y deshabilitado
+      systemd:
+        name: app-backend.service
+        state: stopped
+        enabled: false
+        daemon_reload: true
+      tags: [app]
+
+    # ============================================================
+    # 9. INICIALIZAR ESQUEMA DE BASE DE DATOS
+    # ============================================================
+    - name: Copiar init.sql al servidor desde el repo local
+      copy:
+        src: "{{ init_sql_local }}"
+        dest: "{{ app_backend_dir }}/init.sql"
+        owner: app
+        group: app
+        mode: "0644"
+      tags: [db_init]
+
+    - name: Verificar si la DB ya tiene tablas
+      become: true
+      become_user: postgres
+      shell: >
+        psql -d {{ app_db_name }} -t -c
+        "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'"
+      register: table_count
+      changed_when: false
+      tags: [db_init]
+
+    - name: Ejecutar init.sql (solo si la DB esta vacia)
+      become: true
+      become_user: postgres
+      shell: >
+        psql -d {{ app_db_name }} -f {{ app_backend_dir }}/init.sql
+      when: table_count.stdout | trim == "0"
+      tags: [db_init]
+
+    # ============================================================
+    # 10. SUDO PASSWORDLESS PARA EC2-USER
+    # ============================================================
+    - name: Permitir a ec2-user reiniciar el servicio sin password
+      copy:
+        content: |
+          ec2-user ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart app-backend.service, /usr/bin/systemctl is-active app-backend.service
+        dest: /etc/sudoers.d/ec2-user-app
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
+      tags: [sudo]
+
+  handlers:
+    - name: restart postgresql
+      systemd:
+        name: postgresql
+        state: restarted
+
+    - name: reload caddy
+      systemd:
+        name: caddy
+        state: reloaded
+
+    - name: daemon-reload
+      systemd:
+        daemon_reload: true

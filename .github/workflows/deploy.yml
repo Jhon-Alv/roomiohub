@@ -1,0 +1,143 @@
+# ============================================================
+# .github/workflows/deploy.yml
+# Despliegue automatico a EC2 en push a main
+# ============================================================
+
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout codigo
+        uses: actions/checkout@v4
+
+      # ----------------------------------------------------------
+      # Build backend (Gradle)
+      # ----------------------------------------------------------
+      - name: Configurar JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      - name: Hacer gradlew ejecutable
+        run: chmod +x ./gradlew
+        working-directory: ./backend
+
+      - name: Build backend (.jar)
+        run: ./gradlew bootJar -x test
+        working-directory: ./backend
+
+      - name: Renombrar JAR
+        run: cp build/libs/backend-0.0.1-SNAPSHOT.jar build/libs/app.jar
+        working-directory: ./backend
+
+      # ----------------------------------------------------------
+      # Build frontend (Angular)
+      # ----------------------------------------------------------
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias del frontend
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Build frontend (produccion)
+        run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+      # ----------------------------------------------------------
+      # Autenticacion AWS (OIDC)
+      # ----------------------------------------------------------
+      - name: Configurar credenciales AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # ----------------------------------------------------------
+      # Abrir puerto 22 temporalmente
+      # ----------------------------------------------------------
+      - name: Obtener IP publica del runner
+        id: ip
+        run: |
+          RUNNER_IP=$(curl -s https://checkip.amazonaws.com)
+          echo "ip=$RUNNER_IP" >> $GITHUB_OUTPUT
+
+      - name: Autorizar IP del runner en Security Group (SSH)
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ vars.EC2_SG_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ip }}/32
+
+      # ----------------------------------------------------------
+      # Copiar archivos al servidor
+      # ----------------------------------------------------------
+      - name: Preparar clave SSH temporal
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > /tmp/ec2_key
+          chmod 600 /tmp/ec2_key
+
+      - name: Agregar host key al known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ vars.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copiar JAR del backend
+        run: |
+          scp -i /tmp/ec2_key \
+            backend/build/libs/app.jar \
+            ec2-user@${{ vars.EC2_HOST }}:/opt/app/backend/app.jar
+
+      - name: Copiar frontend (dist/)
+        run: |
+          scp -i /tmp/ec2_key -r \
+            frontend/dist/frontend/browser/* \
+            ec2-user@${{ vars.EC2_HOST }}:/opt/app/frontend/dist/
+
+      # ----------------------------------------------------------
+      # Reiniciar servicio y verificar
+      # ----------------------------------------------------------
+      - name: Reiniciar app-backend.service
+        run: |
+          ssh -i /tmp/ec2_key \
+            ec2-user@${{ vars.EC2_HOST }} \
+            "sudo systemctl restart app-backend.service"
+
+      - name: Verificar que el servicio esta activo
+        run: |
+          ssh -i /tmp/ec2_key \
+            ec2-user@${{ vars.EC2_HOST }} \
+            "sudo systemctl is-active app-backend.service"
+
+      # ----------------------------------------------------------
+      # Cerrar puerto 22 (SIEMPRE)
+      # ----------------------------------------------------------
+      - name: Revocar regla de Security Group (SSH)
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ vars.EC2_SG_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ip }}/32

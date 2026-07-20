@@ -440,9 +440,24 @@ import Layout from '../layouts/Layout.astro';
       }
 
       const data = await res.json();
-      const u = encodeURIComponent(data.username);
-      const p = encodeURIComponent(data.passwordTemporal);
-      window.location.href = `/exito?direct=true&u=${u}&p=${p}`;
+      document.getElementById('register-container')!.innerHTML = `
+        <section class="bg-surface-container-lowest py-section-padding-mobile md:py-section-padding-desktop">
+          <div class="max-w-container-max mx-auto px-gutter text-center">
+            <div class="text-7xl mb-6">🎉</div>
+            <h2 class="font-headline-md text-headline-md text-green-600 mb-4">Registro exitoso</h2>
+            <p class="font-body-lg text-on-surface-variant mb-8">Tu cuenta fue creada. Guarda tus credenciales de acceso:</p>
+            <div class="bg-primary text-white rounded-xl p-6 max-w-md mx-auto mb-6 text-left">
+              <div class="bg-white/10 rounded-lg p-4 space-y-3 text-sm font-mono">
+                <div class="flex justify-between"><span class="text-primary-fixed-dim">Usuario:</span><span class="font-bold">${data.username}</span></div>
+                <div class="flex justify-between"><span class="text-primary-fixed-dim">Contrasena:</span><span class="font-bold">${data.passwordTemporal}</span></div>
+              </div>
+              <p class="text-primary-fixed-dim text-xs mt-4">Guarda esta informacion. No la volveras a ver.</p>
+            </div>
+            <a href="/app/auth/login" class="font-cta-label text-cta-label px-8 py-4 rounded-lg bg-[#D4AF37] text-white hover:opacity-90 transition-opacity shadow-sm inline-block">Ir al login</a>
+          </div>
+        </section>
+      `;
+      document.getElementById('register-container')!.scrollIntoView({ behavior: 'smooth' });
     } catch {
       showToast('Error de conexion. Intenta de nuevo.', 'error');
       btn.disabled = false;

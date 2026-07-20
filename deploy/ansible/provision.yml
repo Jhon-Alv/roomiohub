@@ -137,6 +137,24 @@
       notify: restart postgresql
       tags: [postgres]
 
+    - name: Cambiar autenticacion local TCP IPv4 a scram-sha-256
+      lineinfile:
+        path: /var/lib/pgsql/data/pg_hba.conf
+        regexp: '^(host\s+all\s+all\s+127\.0\.0\.1/32\s+)ident'
+        line: '\1scram-sha-256'
+        backrefs: true
+      notify: restart postgresql
+      tags: [postgres]
+
+    - name: Cambiar autenticacion local TCP IPv6 a scram-sha-256
+      lineinfile:
+        path: /var/lib/pgsql/data/pg_hba.conf
+        regexp: '^(host\s+all\s+all\s+::1/128\s+)ident'
+        line: '\1scram-sha-256'
+        backrefs: true
+      notify: restart postgresql
+      tags: [postgres]
+
     - name: Iniciar y habilitar PostgreSQL
       systemd:
         name: postgresql
@@ -307,7 +325,7 @@
         content: |
           [Unit]
           Description=RoomioHub Backend (Spring Boot)
-          After=network.target postgresql16.service
+          After=network.target postgresql.service
 
           [Service]
           Type=simple
@@ -376,6 +394,16 @@
       shell: >
         psql -d {{ app_db_name }} -f {{ app_backend_dir }}/init.sql
       when: table_count.stdout | trim == "0"
+      tags: [db_init]
+
+    - name: Otorgar permisos de tabla al usuario de la app
+      become: true
+      become_user: postgres
+      shell: >
+        psql -d {{ app_db_name }} -c
+        "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ app_db_user }};
+         GRANT USAGE ON SCHEMA public TO {{ app_db_user }};
+         ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {{ app_db_user }};"
       tags: [db_init]
 
     # ============================================================

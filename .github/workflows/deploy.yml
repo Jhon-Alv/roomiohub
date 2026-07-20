@@ -61,7 +61,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Build frontend (produccion)
-        run: npm run build -- --configuration production
+        run: npm run build -- --configuration production --base-href /app/
         working-directory: ./frontend
 
       # ----------------------------------------------------------

@@ -13,9 +13,10 @@ http:// {
     }
 
     handle /app/* {
+        uri strip_prefix /app
         root * /opt/app/frontend/dist
         encode gzip zstd
-        try_files {path} /app/index.html
+        try_files {path} /index.html
         file_server
     }
 

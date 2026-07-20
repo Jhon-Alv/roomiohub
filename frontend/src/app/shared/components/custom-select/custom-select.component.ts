@@ -33,7 +33,8 @@ export interface SelectOption {
 
       <!-- Dropdown menu -->
       @if (isOpen()) {
-        <div class="absolute z-50 w-full mt-1 bg-surface border border-outline-variant rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto custom-scrollbar py-1">
+        <div class="absolute z-50 w-full bg-surface border border-outline-variant rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto custom-scrollbar py-1"
+             [class.bottom-full]="dropUp" [class.mb-1]="dropUp" [class.mt-1]="!dropUp">
           @for (option of options; track option.value) {
             <button 
               type="button"
@@ -59,6 +60,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
   @Input() options: SelectOption[] = [];
   @Input() placeholder: string = 'Seleccionar...';
   @Input() size: 'sm' | 'md' = 'md';
+  @Input() dropUp: boolean = false;
   
   value: any = null;
   disabled: boolean = false;

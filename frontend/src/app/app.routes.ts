@@ -44,6 +44,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['ADMIN', 'RECEPCION', 'LIMPIEZA'])],
         loadChildren: () => import('./features/cleaning/cleaning.routes').then(m => m.CLEANING_ROUTES)
       },
+      {
+        path: 'metrics',
+        canActivate: [roleGuard(['ADMIN'])],
+        loadChildren: () => import('./features/metrics/metrics.routes').then(m => m.METRICS_ROUTES)
+      },
       /*
       {
         path: 'logistics',

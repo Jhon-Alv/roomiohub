@@ -133,7 +133,7 @@ const { title = 'RoomioHub', description = 'Sistema de gestion hotelera intelige
           <a class="text-on-surface-variant hover:text-[#D4AF37] transition-colors duration-200" href="#plans">Planes</a>
         </div>
         <div class="hidden md:flex items-center gap-4">
-          <a id="login-link" href="/auth/login" class="font-cta-label text-cta-label px-6 py-2 rounded-lg border-2 border-primary text-primary hover:bg-surface-grey transition-colors">Ingresar</a>
+          <a id="login-link" href="/app/auth/login" class="font-cta-label text-cta-label px-6 py-2 rounded-lg border-2 border-primary text-primary hover:bg-surface-grey transition-colors">Ingresar</a>
           <a href="#plans" class="font-cta-label text-cta-label px-6 py-2 rounded-lg bg-[#D4AF37] text-white hover:opacity-90 transition-opacity shadow-sm">Comenzar</a>
         </div>
         <button class="md:hidden text-primary" aria-label="Menu">
@@ -165,7 +165,7 @@ const { title = 'RoomioHub', description = 'Sistema de gestion hotelera intelige
       document.getElementById('login-link').href =
         window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
           ? 'http://localhost:4200/auth/login'
-          : '/auth/login';
+          : '/app/auth/login';
     </script>
   </body>
 </html>

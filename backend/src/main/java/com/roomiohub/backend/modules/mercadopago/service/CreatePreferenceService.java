@@ -71,7 +71,6 @@ public class CreatePreferenceService {
         preferenceData.put("items", List.of(item));
         preferenceData.put("external_reference", idempotencyKey);
         preferenceData.put("back_urls", backUrls);
-        preferenceData.put("auto_return", "approved");
         preferenceData.put("metadata", metadata);
 
         log.info("Enviando preferencia a MercadoPago. back_urls: {}", backUrls);

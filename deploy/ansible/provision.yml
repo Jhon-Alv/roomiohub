@@ -18,6 +18,7 @@
     app_base: /opt/app
     app_backend_dir: /opt/app/backend
     app_frontend_dir: /opt/app/frontend/dist
+    app_landing_dir: /opt/app/landing
 
     swap_size_mb: 2048
     swap_path: /swapfile
@@ -298,6 +299,7 @@
       loop:
         - "{{ app_backend_dir }}"
         - "{{ app_frontend_dir }}"
+        - "{{ app_landing_dir }}"
       tags: [app]
 
     # ============================================================
@@ -310,7 +312,11 @@
           BD_ROOMIOHUB_USERNAME={{ app_db_user }}
           BD_ROOMIOHUB_PASSWORD={{ app_db_password }}
           JWT_SECRET_KEY={{ app_jwt_secret }}
-          CORS_ALLOWED_ORIGINS=http://TU_IP_O_DOMINIO_AQUI
+          CORS_ALLOWED_ORIGINS=http://{{ lookup('env', 'EC2_HOST') }}
+          MERCADOPAGO_ACCESS_TOKEN={{ lookup('env', 'MERCADOPAGO_ACCESS_TOKEN') | default('TEST-0000000000000000-000000-00000000000000000000000000000000-000000000', true) }}
+          MERCADOPAGO_PUBLIC_KEY={{ lookup('env', 'MERCADOPAGO_PUBLIC_KEY') | default('TEST-00000000-0000-0000-0000-000000000000', true) }}
+          MERCADOPAGO_WEBHOOK_SECRET={{ lookup('env', 'MERCADOPAGO_WEBHOOK_SECRET') | default('', true) }}
+          LANDING_BASE_URL=http://{{ lookup('env', 'EC2_HOST') }}
         dest: "{{ app_backend_dir }}/.env"
         owner: app
         group: app

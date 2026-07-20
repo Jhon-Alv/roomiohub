@@ -1,0 +1,461 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="RoomioHub — Gestion hotelera inteligente"
+  description="Sistema de gestion integral para hoteles: mapa de habitaciones en tiempo real, reservas, limpieza, metricas y multi-sede. Prueba gratuita de 30 dias."
+>
+  <!-- Hero -->
+  <section class="max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop grid md:grid-cols-2 gap-12 items-center" id="home">
+    <div class="space-y-8">
+      <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary">
+        Gestiona tu hotel desde un solo lugar
+      </h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+        Mapa de habitaciones en tiempo real, check-in y check-out, control de limpieza, reportes y administracion multi-sede. Comienza hoy con 30 dias de prueba gratuita.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-4">
+        <a href="#plans" class="font-cta-label text-cta-label px-8 py-4 rounded-lg bg-[#D4AF37] text-white hover:opacity-90 transition-opacity shadow-sm inline-block">Prueba gratuita</a>
+        <a href="#features" class="font-cta-label text-cta-label px-8 py-4 rounded-lg border-2 border-primary text-primary hover:bg-surface-grey transition-colors inline-block">Ver funcionalidades</a>
+      </div>
+    </div>
+    <div class="relative rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-surface-grey bg-white p-2">
+      <div class="bg-surface-grey rounded-lg w-full h-[500px] flex items-center justify-center relative overflow-hidden" data-alt="Dashboard de gestion hotelera RoomioHub">
+        <div class="absolute inset-4 bg-white/90 backdrop-blur-sm rounded shadow-sm p-6 border border-outline-variant/30 flex flex-col gap-4">
+          <div class="h-8 bg-surface-container w-1/3 rounded"></div>
+          <div class="flex-1 grid grid-cols-2 gap-4">
+            <div class="bg-surface-container rounded-lg border border-outline-variant/20 p-4"></div>
+            <div class="bg-surface-container rounded-lg border border-outline-variant/20 p-4 flex flex-col gap-2">
+              <div class="h-4 bg-surface-dim rounded w-3/4"></div>
+              <div class="h-4 bg-surface-dim rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="bg-surface-container-lowest py-section-padding-mobile md:py-section-padding-desktop" id="features">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="text-center mb-16">
+        <h2 class="font-headline-md text-headline-md text-primary mb-4">Todo lo que necesitas para operar tu hotel</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Herramientas disenadas para optimizar cada aspecto de la gestion hotelera.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Mapa en tiempo real -->
+        <div class="md:col-span-2 bg-white rounded-xl p-8 border-t-4 border-[#D4AF37] border border-surface-grey shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between h-[400px]">
+          <div>
+            <span class="material-symbols-outlined text-primary mb-4" style="font-size: 40px; font-variation-settings: 'FILL' 1;">map</span>
+            <h3 class="font-headline-md text-headline-md text-primary mb-2">Mapa de habitaciones en tiempo real</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant max-w-md">Visualiza el estado de cada habitacion al instante. Gestiona limpieza, mantenimiento y ocupacion con actualizaciones en vivo.</p>
+          </div>
+          <div class="h-40 bg-surface-container rounded-lg mt-6 overflow-hidden border border-outline-variant/20 relative flex items-center justify-center">
+            <div class="grid grid-cols-5 gap-2 p-4 w-full h-full">
+              <div class="bg-green-200 rounded border border-green-400 flex items-center justify-center text-xs font-bold text-green-800">101</div>
+              <div class="bg-green-200 rounded border border-green-400 flex items-center justify-center text-xs font-bold text-green-800">102</div>
+              <div class="bg-red-200 rounded border border-red-400 flex items-center justify-center text-xs font-bold text-red-800">103</div>
+              <div class="bg-green-200 rounded border border-green-400 flex items-center justify-center text-xs font-bold text-green-800">104</div>
+              <div class="bg-orange-200 rounded border border-orange-400 flex items-center justify-center text-xs font-bold text-orange-800">105</div>
+              <div class="bg-yellow-200 rounded border border-yellow-400 flex items-center justify-center text-xs font-bold text-yellow-800">201</div>
+              <div class="bg-green-200 rounded border border-green-400 flex items-center justify-center text-xs font-bold text-green-800">202</div>
+              <div class="bg-green-200 rounded border border-green-400 flex items-center justify-center text-xs font-bold text-green-800">203</div>
+              <div class="bg-gray-300 rounded border border-gray-400 flex items-center justify-center text-xs font-bold text-gray-600">204</div>
+              <div class="bg-red-200 rounded border border-red-400 flex items-center justify-center text-xs font-bold text-red-800">205</div>
+            </div>
+          </div>
+        </div>
+        <!-- Check-in / Check-out -->
+        <div class="bg-white rounded-xl p-8 border border-surface-grey shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between h-[400px]">
+          <div>
+            <span class="material-symbols-outlined text-primary mb-4" style="font-size: 40px; font-variation-settings: 'FILL' 1;">meeting_room</span>
+            <h3 class="font-headline-md text-headline-md text-primary mb-2">Check-in / Check-out</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">Registra entradas y salidas al instante. Calculo automatico de tarifas, control de tiempo excedido y multiples metodos de pago.</p>
+          </div>
+          <div class="mt-6 flex flex-col gap-2">
+            <div class="flex items-center justify-between p-3 bg-surface-grey rounded-lg text-sm">
+              <span class="font-mono text-on-surface-variant">Habitacion 301</span>
+              <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Check-in: 14:00</span>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-surface-grey rounded-lg text-sm">
+              <span class="font-mono text-on-surface-variant">Habitacion 205</span>
+              <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">Check-out: 11:30</span>
+            </div>
+          </div>
+        </div>
+        <!-- Limpieza -->
+        <div class="bg-white rounded-xl p-8 border border-surface-grey shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between h-[400px]">
+          <div>
+            <span class="material-symbols-outlined text-primary mb-4" style="font-size: 40px; font-variation-settings: 'FILL' 1;">cleaning_services</span>
+            <h3 class="font-headline-md text-headline-md text-primary mb-2">Control de limpieza</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">Asigna tareas al personal, haz seguimiento del estado de cada habitacion y recibe alertas cuando una habitacion esta lista.</p>
+          </div>
+          <div class="mt-6 flex flex-col gap-2">
+            <div class="flex items-center justify-between p-3 bg-surface-grey rounded-lg text-sm">
+              <span>Habitacion 101</span>
+              <span class="material-symbols-outlined text-yellow-500" style="font-size: 20px;">cleaning_services</span>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-surface-grey rounded-lg text-sm">
+              <span>Habitacion 104</span>
+              <span class="material-symbols-outlined text-green-500" style="font-size: 20px;">check_circle</span>
+            </div>
+          </div>
+        </div>
+        <!-- Reportes -->
+        <div class="bg-white rounded-xl p-8 border border-surface-grey shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between h-[400px]">
+          <div>
+            <span class="material-symbols-outlined text-primary mb-4" style="font-size: 40px; font-variation-settings: 'FILL' 1;">bar_chart_4_bars</span>
+            <h3 class="font-headline-md text-headline-md text-primary mb-2">Reportes y metricas</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">Visualiza la ocupacion, ingresos y tendencias de tu hotel. Toma decisiones basadas en datos reales.</p>
+          </div>
+          <div class="mt-6 flex gap-2 items-end h-24">
+            <div class="w-1/5 bg-[#D4AF37] rounded-t h-3/4"></div>
+            <div class="w-1/5 bg-[#D4AF37] rounded-t h-1/2"></div>
+            <div class="w-1/5 bg-[#D4AF37] rounded-t h-full"></div>
+            <div class="w-1/5 bg-[#D4AF37] rounded-t h-2/3"></div>
+            <div class="w-1/5 bg-[#D4AF37] rounded-t h-5/6"></div>
+          </div>
+        </div>
+        <!-- Multi-sede -->
+        <div class="md:col-span-3 bg-primary text-white rounded-xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col md:flex-row items-center gap-12">
+          <div class="flex-1">
+            <span class="material-symbols-outlined text-[#D4AF37] mb-4" style="font-size: 40px; font-variation-settings: 'FILL' 1;">business</span>
+            <h3 class="font-headline-md text-headline-md mb-4 text-white">Multi-sede</h3>
+            <p class="font-body-lg text-body-lg text-surface-variant max-w-xl">Administra varios hoteles o locales desde una sola cuenta. Cambia entre sedes con un solo clic y consolida la informacion de todas tus propiedades.</p>
+          </div>
+          <div class="w-full md:w-1/3 h-48 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
+            <div class="flex gap-4">
+              <div class="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#D4AF37]" style="font-size: 36px;">hotel</span>
+              </div>
+              <div class="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#D4AF37]" style="font-size: 36px;">apartment</span>
+              </div>
+              <div class="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#D4AF37]" style="font-size: 36px;">cottage</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans -->
+  <section class="py-section-padding-mobile md:py-section-padding-desktop" id="plans">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="text-center mb-16">
+        <h2 class="font-headline-md text-headline-md text-primary mb-4">Planes y precios</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">30 dias de prueba gratis en todos los planes. Sin compromiso, cancela cuando quieras.</p>
+      </div>
+      <div id="plans-container" class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+        <p class="col-span-full text-center text-on-surface-variant">Cargando planes...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registration (hidden until plan selected) -->
+  <div id="register-container"></div>
+
+  <!-- CTA -->
+  <section class="bg-primary py-section-padding-desktop">
+    <div class="max-w-container-max mx-auto px-gutter text-center">
+      <h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-white mb-6">
+        Empieza a optimizar tu hotel hoy
+      </h2>
+      <p class="font-body-lg text-body-lg text-surface-variant max-w-2xl mx-auto mb-10">
+        Unete a los hoteles que ya confian en RoomioHub para una gestion impecable.
+      </p>
+      <a href="#plans" class="font-cta-label text-cta-label px-10 py-5 rounded-lg bg-[#D4AF37] text-white hover:opacity-90 transition-opacity shadow-lg inline-block">Prueba gratuita de 30 dias</a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  interface PlanResponse {
+    id: string;
+    nombre: string;
+    precioMensual: number;
+    maxHabitaciones: number;
+    maxUsuarios: number;
+    maxSedes: number;
+    flagModuloPromociones: boolean;
+  }
+
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8080/api/v1'
+    : `${window.location.origin}/api/v1`;
+  let selectedPlanId: string | null = null;
+  let selectedPlanName: string | null = null;
+
+  async function loadPlans() {
+    const container = document.getElementById('plans-container')!;
+    try {
+      const res = await fetch(`${API_BASE}/plans`);
+      if (!res.ok) throw new Error('Error al cargar planes');
+      const plans: PlanResponse[] = await res.json();
+
+      if (plans.length === 0) {
+        container.innerHTML = '<p class="col-span-full text-center text-on-surface-variant">No hay planes disponibles</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      plans.forEach((plan, index) => {
+        const card = createPlanCard(plan, index);
+        container.appendChild(card);
+      });
+    } catch {
+      container.innerHTML = '<p class="col-span-full text-center text-on-surface-variant">Error al cargar los planes. Intenta de nuevo.</p>';
+    }
+  }
+
+  function createPlanCard(plan: PlanResponse, index: number): HTMLElement {
+    const features = [
+      { label: 'Habitaciones', value: plan.maxHabitaciones === -1 ? 'Ilimitadas' : String(plan.maxHabitaciones) },
+      { label: 'Usuarios', value: plan.maxUsuarios === -1 ? 'Ilimitados' : String(plan.maxUsuarios) },
+      { label: 'Sedes', value: plan.maxSedes === -1 ? 'Ilimitadas' : String(plan.maxSedes) },
+      { label: 'Promociones', value: plan.flagModuloPromociones ? 'Incluido' : 'No incluido' },
+    ];
+
+    const isPopular = index === 1;
+    const wrapper = document.createElement('div');
+    wrapper.className = isPopular ? 'relative h-[105%]' : 'h-full';
+
+    wrapper.innerHTML = `
+      <div class="bg-white rounded-xl p-8 border border-surface-grey shadow-[0_4px_20px_rgb(0,0,0,0.03)] h-full flex flex-col ${isPopular ? '!bg-primary !border-primary !shadow-[0_20px_40px_rgb(0,16,62,0.15)]' : ''}">
+        ${isPopular ? '<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#D4AF37] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Mas popular</div>' : ''}
+        <div class="mb-8 ${isPopular ? 'mt-2' : ''}">
+          <h3 class="font-headline-md text-headline-md ${isPopular ? 'text-white' : 'text-primary'}">${plan.nombre}</h3>
+          <p class="text-sm ${isPopular ? 'text-primary-fixed-dim' : 'text-on-surface-variant'} mb-4">Hasta ${plan.maxHabitaciones === -1 ? 'habitaciones ilimitadas' : plan.maxHabitaciones + ' habitaciones'}</p>
+          <div class="flex items-baseline gap-1">
+            <span class="font-display-lg-mobile ${isPopular ? 'text-white' : 'text-primary'}">S/ ${plan.precioMensual.toFixed(2)}</span>
+            <span class="${isPopular ? 'text-primary-fixed-dim' : 'text-on-surface-variant'}">/mes</span>
+          </div>
+        </div>
+        <ul class="space-y-4 mb-8 flex-1">
+          ${features.map(f => `
+            <li class="flex items-start gap-3">
+              <span class="material-symbols-outlined ${isPopular ? 'text-[#D4AF37]' : 'text-[#D4AF37]'}" style="font-size: 20px;">${f.value === 'No incluido' ? 'close' : 'check_circle'}</span>
+              <span class="${isPopular ? 'text-white' : 'text-on-surface-variant'} ${f.value === 'No incluido' ? 'opacity-50' : ''}"><strong>${f.value}</strong> ${f.label}</span>
+            </li>
+          `).join('')}
+        </ul>
+        <button class="w-full font-cta-label text-cta-label px-6 py-3 rounded-lg transition-all shadow-sm select-plan-btn ${isPopular ? 'bg-[#D4AF37] text-white hover:opacity-90' : 'border-2 border-primary text-primary hover:bg-surface-grey'}" data-plan-id="${plan.id}" data-plan-name="${plan.nombre}">
+          Seleccionar plan
+        </button>
+      </div>
+    `;
+
+    const btn = wrapper.querySelector('.select-plan-btn') as HTMLButtonElement;
+    btn?.addEventListener('click', () => selectPlan(plan));
+
+    return wrapper;
+  }
+
+  function selectPlan(plan: PlanResponse) {
+    selectedPlanId = plan.id;
+    selectedPlanName = plan.nombre;
+
+    document.querySelectorAll('.select-plan-btn').forEach(b => {
+      const isPopular = (b as HTMLElement).closest('.bg-primary');
+      (b as HTMLElement).style.boxShadow = isPopular ? '0 20px 40px rgba(0,16,62,0.15)' : '';
+    });
+
+    document.getElementById('register-container')!.innerHTML = `
+      <section id="register-section" class="bg-surface-container-lowest py-section-padding-mobile md:py-section-padding-desktop">
+        <div class="max-w-container-max mx-auto px-gutter">
+          <h2 class="font-headline-md text-headline-md text-primary text-center mb-2">Completa tu registro</h2>
+          <p class="text-center text-on-surface-variant mb-10 font-body-lg">
+            Plan seleccionado: <strong class="text-primary">${plan.nombre}</strong> — S/ ${plan.precioMensual.toFixed(2)}/mes
+          </p>
+          <form id="register-form" class="max-w-lg mx-auto" autocomplete="off">
+            <input type="hidden" id="planId" value="${plan.id}" />
+            <div class="mb-5" id="field-nombreComercial">
+              <label for="nombreComercial" class="block font-medium mb-1.5 text-sm text-on-surface-variant">Nombre comercial de la empresa</label>
+              <input type="text" id="nombreComercial" placeholder="Mi Hotel SAC" required maxlength="255"
+                class="w-full px-4 py-3 border-1.5 border-outline-variant rounded-lg text-body-md focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition" />
+              <small class="text-error text-xs mt-1 hidden">Campo requerido</small>
+            </div>
+            <div class="mb-5" id="field-ruc">
+              <label for="ruc" class="block font-medium mb-1.5 text-sm text-on-surface-variant">RUC</label>
+              <input type="text" id="ruc" placeholder="20123456789" required minlength="11" maxlength="20"
+                class="w-full px-4 py-3 border-1.5 border-outline-variant rounded-lg text-body-md focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition" />
+              <small class="text-error text-xs mt-1 hidden">El RUC debe tener entre 11 y 20 caracteres</small>
+            </div>
+            <div class="mb-5" id="field-nombre">
+              <label for="nombre" class="block font-medium mb-1.5 text-sm text-on-surface-variant">Tu nombre completo</label>
+              <input type="text" id="nombre" placeholder="Juan Perez" required maxlength="150"
+                class="w-full px-4 py-3 border-1.5 border-outline-variant rounded-lg text-body-md focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition" />
+              <small class="text-error text-xs mt-1 hidden">Campo requerido</small>
+            </div>
+            <div class="mb-8" id="field-username">
+              <label for="username" class="block font-medium mb-1.5 text-sm text-on-surface-variant">Nombre de usuario</label>
+              <input type="text" id="username" placeholder="juan_admin" required maxlength="100"
+                class="w-full px-4 py-3 border-1.5 border-outline-variant rounded-lg text-body-md focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition" />
+              <small class="text-error text-xs mt-1 hidden">Campo requerido</small>
+            </div>
+            <div class="flex flex-col gap-3">
+              <button type="submit" class="w-full font-cta-label text-cta-label px-6 py-4 rounded-lg bg-[#D4AF37] text-white hover:opacity-90 transition-opacity shadow-sm" id="submit-btn">
+                Pagar con MercadoPago
+              </button>
+              <button type="button" class="w-full font-cta-label text-cta-label px-6 py-4 rounded-lg border-2 border-primary text-primary hover:bg-surface-grey transition-colors" id="direct-register-btn">
+                Registro directo (prueba)
+              </button>
+            </div>
+            <p class="text-center mt-4 text-sm text-on-surface-variant">
+              Paga con MercadoPago o registrate directamente sin pago
+            </p>
+          </form>
+        </div>
+      </section>
+    `;
+
+    document.getElementById('register-section')!.scrollIntoView({ behavior: 'smooth' });
+
+    document.getElementById('register-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      handleSubmit();
+    });
+
+    document.getElementById('direct-register-btn')!.addEventListener('click', async () => {
+      handleDirectRegister();
+    });
+  }
+
+  function showToast(message: string, type: 'error' | 'success') {
+    const toast = document.createElement('div');
+    toast.className = `fixed top-6 right-6 px-6 py-3 rounded-lg text-white font-medium z-50 shadow-lg animate-[slideIn_0.3s_ease] ${type === 'error' ? 'bg-error' : 'bg-green-600'}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+  function setFieldError(fieldId: string, show: boolean) {
+    const field = document.getElementById(`field-${fieldId}`);
+    const input = field?.querySelector('input') as HTMLInputElement;
+    const small = field?.querySelector('small') as HTMLElement;
+    if (field) field.classList.toggle('error', show);
+    if (input && show) input.style.borderColor = '#ba1a1a';
+    if (input && !show) input.style.borderColor = '';
+    if (small) small.style.display = show ? 'block' : 'none';
+  }
+
+  async function handleSubmit() {
+    const formData = {
+      planId: (document.getElementById('planId') as HTMLInputElement).value,
+      nombreComercial: (document.getElementById('nombreComercial') as HTMLInputElement).value.trim(),
+      ruc: (document.getElementById('ruc') as HTMLInputElement).value.trim(),
+      nombre: (document.getElementById('nombre') as HTMLInputElement).value.trim(),
+      username: (document.getElementById('username') as HTMLInputElement).value.trim(),
+    };
+
+    const fields = ['nombreComercial', 'ruc', 'nombre', 'username'] as const;
+    fields.forEach(f => setFieldError(f, !formData[f]));
+    if (formData.ruc && formData.ruc.length < 11) setFieldError('ruc', true);
+    if (!formData.planId) { showToast('Selecciona un plan primero', 'error'); return; }
+
+    const hasErrors = fields.some(f => !formData[f]) || (formData.ruc && formData.ruc.length < 11);
+    if (hasErrors) return;
+
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Creando pago...';
+
+    try {
+      const res = await fetch(`${API_BASE}/mercadopago/create-preference`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.status === 409) {
+        const err = await res.json();
+        showToast(err.mensaje || 'Ya existe una cuenta con ese RUC', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Pagar con MercadoPago';
+        return;
+      }
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ mensaje: 'Error al crear el pago' }));
+        showToast(err.mensaje || 'Error al crear el pago', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Pagar con MercadoPago';
+        return;
+      }
+
+      const data = await res.json();
+      window.location.href = data.initPoint;
+    } catch {
+      showToast('Error de conexion. Intenta de nuevo.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Pagar con MercadoPago';
+    }
+  }
+
+  async function handleDirectRegister() {
+    const formData = {
+      planId: (document.getElementById('planId') as HTMLInputElement).value,
+      nombreComercial: (document.getElementById('nombreComercial') as HTMLInputElement).value.trim(),
+      ruc: (document.getElementById('ruc') as HTMLInputElement).value.trim(),
+      nombre: (document.getElementById('nombre') as HTMLInputElement).value.trim(),
+      username: (document.getElementById('username') as HTMLInputElement).value.trim(),
+    };
+
+    const fields = ['nombreComercial', 'ruc', 'nombre', 'username'] as const;
+    fields.forEach(f => setFieldError(f, !formData[f]));
+    if (formData.ruc && formData.ruc.length < 11) setFieldError('ruc', true);
+    if (!formData.planId) { showToast('Selecciona un plan primero', 'error'); return; }
+
+    const hasErrors = fields.some(f => !formData[f]) || (formData.ruc && formData.ruc.length < 11);
+    if (hasErrors) return;
+
+    const btn = document.getElementById('direct-register-btn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Creando cuenta...';
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.status === 409) {
+        const err = await res.json();
+        showToast(err.mensaje || 'Ya existe una cuenta con ese RUC', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Registro directo (prueba)';
+        return;
+      }
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ mensaje: 'Error al registrar' }));
+        showToast(err.mensaje || 'Error al registrar', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Registro directo (prueba)';
+        return;
+      }
+
+      const data = await res.json();
+      localStorage.setItem('tempUsername', data.username);
+      localStorage.setItem('tempPassword', data.passwordTemporal);
+      window.location.href = '/exito?direct=true';
+    } catch {
+      showToast('Error de conexion. Intenta de nuevo.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Registro directo (prueba)';
+    }
+  }
+
+  loadPlans();
+</script>
+
+<style is:global>
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+</style>

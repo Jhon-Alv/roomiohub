@@ -2,23 +2,7 @@
 # Caddyfile — RoomioHub
 # ============================================================
 
-# --- CUANDO TENGAS DOMINIO, REEMPLAZA EL BLOQUE `http://` ---
-# tudominio.com {
-#     handle /api/* {
-#         reverse_proxy localhost:8080
-#     }
-#     handle {
-#         root * /opt/app/frontend/dist
-#         encode gzip zstd
-#         try_files {path} /index.html
-#         file_server
-#     }
-# }
-
 http:// {
-    # API — Reverse proxy hacia Spring Boot (:8080)
-    # Usa `handle` (no handle_path) para preservar la ruta completa.
-    # El backend tiene rutas como /api/v1/auth, /api/v1/booking, etc.
     handle /api/* {
         reverse_proxy localhost:8080 {
             transport http {
@@ -28,10 +12,15 @@ http:// {
         }
     }
 
-    # Frontend estático — Angular SPA
-    # try_files: si el archivo no existe → sirve index.html
-    handle {
+    handle /app/* {
         root * /opt/app/frontend/dist
+        encode gzip zstd
+        try_files {path} /app/index.html
+        file_server
+    }
+
+    handle {
+        root * /opt/app/landing
         encode gzip zstd
         try_files {path} /index.html
         file_server

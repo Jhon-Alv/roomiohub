@@ -1,0 +1,171 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'RoomioHub', description = 'Sistema de gestion hotelera inteligente' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/images/logo_roomiohub.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" is:inline></script>
+    <script id="tailwind-config" is:inline>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-container": "#745c00",
+              "deep-navy-dark": "#06163D",
+              "on-primary-container": "#7a8ed2",
+              "on-secondary-fixed-variant": "#574500",
+              "tertiary-container": "#4d1800",
+              "surface-variant": "#e1e3e4",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#e1e3e4",
+              "primary-container": "#0a2463",
+              "on-tertiary-fixed-variant": "#733418",
+              "surface-container-low": "#f3f4f5",
+              "outline-variant": "#c5c6d2",
+              "primary-fixed-dim": "#b5c4ff",
+              "background": "#f8f9fa",
+              "on-primary-fixed": "#00164d",
+              "tertiary-fixed-dim": "#ffb597",
+              "on-secondary-fixed": "#241a00",
+              "outline": "#757681",
+              "inverse-surface": "#2e3132",
+              "inverse-on-surface": "#f0f1f2",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "on-secondary": "#ffffff",
+              "surface-bright": "#f8f9fa",
+              "text-main": "#1A1A1A",
+              "on-surface": "#191c1d",
+              "error-container": "#ffdad6",
+              "secondary-fixed-dim": "#e9c349",
+              "on-primary-fixed-variant": "#2e4382",
+              "on-error-container": "#93000a",
+              "on-surface-variant": "#444650",
+              "secondary-container": "#fed65b",
+              "error": "#ba1a1a",
+              "surface-grey": "#F1F3F5",
+              "surface-tint": "#475b9c",
+              "inverse-primary": "#b5c4ff",
+              "secondary-fixed": "#ffe088",
+              "on-tertiary-fixed": "#360f00",
+              "on-background": "#191c1d",
+              "surface": "#f8f9fa",
+              "surface-container-high": "#e7e8e9",
+              "on-primary": "#ffffff",
+              "tertiary": "#2b0a00",
+              "primary-fixed": "#dce1ff",
+              "on-error": "#ffffff",
+              "on-tertiary-container": "#cd7b59",
+              "surface-container": "#edeeef",
+              "tertiary-fixed": "#ffdbcd",
+              "secondary": "#735c00",
+              "primary": "#00103e",
+              "champagne-light": "#E9D79B"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "base": "8px",
+              "container-max": "1280px",
+              "gutter": "24px",
+              "section-padding-desktop": "120px",
+              "section-padding-mobile": "64px"
+            },
+            fontFamily: {
+              "headline-md": ["Inter"],
+              "body-md": ["Inter"],
+              "label-caps": ["Inter"],
+              "display-lg-mobile": ["Inter"],
+              "body-lg": ["Inter"],
+              "cta-label": ["Inter"],
+              "display-lg": ["Inter"]
+            },
+            fontSize: {
+              "headline-md": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "600" }],
+              "display-lg-mobile": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "cta-label": ["16px", { lineHeight: "20px", fontWeight: "600" }],
+              "display-lg": ["64px", { lineHeight: "72px", letterSpacing: "-0.02em", fontWeight: "700" }]
+            }
+          }
+        }
+      }
+    </script>
+    <style is:global>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+  </head>
+  <body class="bg-background text-text-main font-body-md antialiased pt-20">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-outline-variant/30">
+      <div class="max-w-container-max mx-auto px-gutter flex justify-between items-center h-20">
+        <a class="flex items-center gap-2" href="#">
+          <img alt="RoomioHub Logo" class="h-10 w-auto rounded" src="/images/logo_roomiohub.svg" />
+          <span class="font-headline-md text-headline-md font-bold text-primary">RoomioHub</span>
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+          <a class="text-primary font-bold border-b-2 border-[#D4AF37] pb-1" href="#home">Inicio</a>
+          <a class="text-on-surface-variant hover:text-[#D4AF37] transition-colors duration-200" href="#features">Funcionalidades</a>
+          <a class="text-on-surface-variant hover:text-[#D4AF37] transition-colors duration-200" href="#plans">Planes</a>
+        </div>
+        <div class="hidden md:flex items-center gap-4">
+          <a id="login-link" href="/auth/login" class="font-cta-label text-cta-label px-6 py-2 rounded-lg border-2 border-primary text-primary hover:bg-surface-grey transition-colors">Ingresar</a>
+          <a href="#plans" class="font-cta-label text-cta-label px-6 py-2 rounded-lg bg-[#D4AF37] text-white hover:opacity-90 transition-opacity shadow-sm">Comenzar</a>
+        </div>
+        <button class="md:hidden text-primary" aria-label="Menu">
+          <span class="material-symbols-outlined" style="font-size: 32px;">menu</span>
+        </button>
+      </div>
+    </nav>
+
+    <slot />
+
+    <!-- Footer -->
+    <footer class="bg-surface-container-lowest border-t border-outline-variant/50 w-full">
+      <div class="max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-16 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div class="flex items-center gap-2">
+          <img alt="RoomioHub Logo" class="h-8 w-auto rounded grayscale opacity-80" src="/images/logo_roomiohub.svg" />
+          <span class="font-headline-md font-bold text-primary text-xl">RoomioHub</span>
+        </div>
+        <p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+          &copy; {new Date().getFullYear()} RoomioHub. Todos los derechos reservados.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6">
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-[#D4AF37] transition-colors" href="#">Privacidad</a>
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-[#D4AF37] transition-colors" href="#">Terminos</a>
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-[#D4AF37] transition-colors" href="#">Contacto</a>
+        </div>
+      </div>
+    </footer>
+    <script is:inline>
+      document.getElementById('login-link').href =
+        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://localhost:4200/auth/login'
+          : '/auth/login';
+    </script>
+  </body>
+</html>

@@ -384,7 +384,7 @@
     - name: Permitir a ec2-user reiniciar el servicio sin password
       copy:
         content: |
-          ec2-user ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart app-backend.service, /usr/bin/systemctl is-active app-backend.service
+          ec2-user ALL=(ALL) NOPASSWD: ALL
         dest: /etc/sudoers.d/ec2-user-app
         owner: root
         group: root

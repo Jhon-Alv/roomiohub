@@ -103,17 +103,31 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ vars.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Copiar JAR del backend
+      - name: Copiar JAR del backend a /tmp
         run: |
           scp -i /tmp/ec2_key \
             backend/build/libs/app.jar \
-            ec2-user@${{ vars.EC2_HOST }}:/opt/app/backend/app.jar
+            ec2-user@${{ vars.EC2_HOST }}:/tmp/app.jar
 
-      - name: Copiar frontend (dist/)
+      - name: Mover JAR a ubicacion final
         run: |
-          scp -i /tmp/ec2_key -r \
-            frontend/dist/frontend/browser/* \
-            ec2-user@${{ vars.EC2_HOST }}:/opt/app/frontend/dist/
+          ssh -i /tmp/ec2_key ec2-user@${{ vars.EC2_HOST }} \
+            "sudo mv /tmp/app.jar /opt/app/backend/app.jar && sudo chown app:app /opt/app/backend/app.jar"
+
+      - name: Empaquetar y copiar frontend (dist/)
+        run: |
+          tar -czf /tmp/frontend-dist.tar.gz \
+            -C frontend/dist/frontend/browser .
+          scp -i /tmp/ec2_key \
+            /tmp/frontend-dist.tar.gz \
+            ec2-user@${{ vars.EC2_HOST }}:/tmp/frontend-dist.tar.gz
+
+      - name: Desempaquetar frontend en destino
+        run: |
+          ssh -i /tmp/ec2_key ec2-user@${{ vars.EC2_HOST }} \
+            "sudo rm -rf /opt/app/frontend/dist/* && \
+             sudo tar -xzf /tmp/frontend-dist.tar.gz -C /opt/app/frontend/dist/ && \
+             sudo chown -R app:app /opt/app/frontend/dist/"
 
       # ----------------------------------------------------------
       # Reiniciar servicio y verificar

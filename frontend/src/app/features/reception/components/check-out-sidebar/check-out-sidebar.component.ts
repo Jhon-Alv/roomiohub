@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { SedeStateService } from '../../../../core/services/sede-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -8,7 +9,7 @@ import { RoomMapDto, FindReservaActivaResponse, CheckOutRequest } from '../../..
 @Component({
   selector: 'app-check-out-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './check-out-sidebar.component.html'
 })
 export class CheckOutSidebarComponent implements OnInit, OnDestroy, OnChanges {
@@ -32,6 +33,8 @@ export class CheckOutSidebarComponent implements OnInit, OnDestroy, OnChanges {
 
   ahoraFormateado = computed(() => this.formatTimeStr(this.ahora()));
 
+  moraManual = signal<number>(0);
+
   ngOnInit() {
     this.interval = setInterval(() => this.ahora.set(new Date()), 30000);
     this.cargarDatos();
@@ -53,8 +56,10 @@ export class CheckOutSidebarComponent implements OnInit, OnDestroy, OnChanges {
         const now = new Date();
         if (now > salidaEsperada) {
           this.tiempoExcedidoMinutos.set(Math.floor((now.getTime() - salidaEsperada.getTime()) / 60000));
+          this.moraManual.set(data.penalidadSugerida);
         } else {
           this.tiempoExcedidoMinutos.set(0);
+          this.moraManual.set(0);
         }
         this.loadingPreview.set(false);
       },
@@ -79,7 +84,7 @@ export class CheckOutSidebarComponent implements OnInit, OnDestroy, OnChanges {
 
     const payload: CheckOutRequest = {
       sedeId,
-      montoPenalidad: p.penalidadSugerida
+      montoPenalidad: this.moraManual()
     };
 
     this.bookingService.realizarCheckOut(this.habitacion.id, payload).subscribe({

@@ -41,13 +41,12 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script is:inline>
-  const isDirect = new URLSearchParams(window.location.search).get('direct') === 'true';
+  const params = new URLSearchParams(window.location.search);
+  const isDirect = params.get('direct') === 'true';
   if (isDirect) {
     document.getElementById('credentials-box')!.classList.remove('hidden');
     document.getElementById('mercadopago-box')!.classList.add('hidden');
-    document.getElementById('cred-username')!.textContent = localStorage.getItem('tempUsername') || '';
-    document.getElementById('cred-password')!.textContent = localStorage.getItem('tempPassword') || '';
-    localStorage.removeItem('tempUsername');
-    localStorage.removeItem('tempPassword');
+    document.getElementById('cred-username')!.textContent = params.get('u') || '';
+    document.getElementById('cred-password')!.textContent = params.get('p') || '';
   }
 </script>

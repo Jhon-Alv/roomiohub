@@ -440,9 +440,9 @@ import Layout from '../layouts/Layout.astro';
       }
 
       const data = await res.json();
-      localStorage.setItem('tempUsername', data.username);
-      localStorage.setItem('tempPassword', data.passwordTemporal);
-      window.location.href = '/exito?direct=true';
+      const u = encodeURIComponent(data.username);
+      const p = encodeURIComponent(data.passwordTemporal);
+      window.location.href = `/exito?direct=true&u=${u}&p=${p}`;
     } catch {
       showToast('Error de conexion. Intenta de nuevo.', 'error');
       btn.disabled = false;

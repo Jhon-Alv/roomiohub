@@ -1,0 +1,77 @@
+---
+export interface Props {
+  nombre: string;
+  precio: number;
+  maxHabitaciones: number;
+  maxUsuarios: number;
+  maxSedes: number;
+  flagPromociones: boolean;
+  selected: boolean;
+}
+
+const { nombre, precio, maxHabitaciones, maxUsuarios, maxSedes, flagPromociones, selected } = Astro.props;
+const features = [
+  { label: 'Habitaciones', value: maxHabitaciones === -1 ? 'Ilimitadas' : String(maxHabitaciones) },
+  { label: 'Usuarios', value: maxUsuarios === -1 ? 'Ilimitados' : String(maxUsuarios) },
+  { label: 'Sedes', value: maxSedes === -1 ? 'Ilimitadas' : String(maxSedes) },
+  { label: 'Promociones', value: flagPromociones ? 'Incluido' : 'No incluido' },
+];
+---
+
+<div class={`plan-card ${selected ? 'selected' : ''}`}>
+  <div class="plan-header">{nombre}</div>
+  <div class="plan-price">
+    S/ {precio.toFixed(2)}
+    <span>/mes</span>
+  </div>
+  <ul class="plan-features">
+    {features.map(f => (
+      <li class={f.value === 'No incluido' ? 'disabled' : ''}>
+        <span class="check">{f.value === 'No incluido' ? '✕' : '✓'}</span>
+        <strong>{f.value}</strong> {f.label}
+      </li>
+    ))}
+  </ul>
+  <button class="btn btn-primary btn-lg select-plan" data-plan={nombre}>
+    {selected ? 'Seleccionado' : 'Seleccionar plan'}
+  </button>
+</div>
+
+<style>
+  .plan-card {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    border: 2px solid #e5e7eb;
+    transition: all .25s;
+    flex: 1;
+    min-width: 280px;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+  }
+  .plan-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.1); }
+  .plan-card.selected { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.2); }
+  .plan-header {
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+  .plan-price { font-size: 2.5rem; font-weight: 800; color: #1a1a2e; margin-bottom: .25rem; }
+  .plan-price span { font-size: 1rem; font-weight: 400; color: #9ca3af; }
+  .plan-features { list-style: none; text-align: left; margin: 1.5rem 0; flex: 1; }
+  .plan-features li {
+    padding: .5rem 0;
+    font-size: .9rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .plan-features li.disabled { color: #d1d5db; }
+  .check { margin-right: .5rem; font-weight: 700; }
+  .plan-features li:not(.disabled) .check { color: #16a34a; }
+  .select-plan { width: 100%; margin-top: 1rem; }
+</style>

@@ -1,0 +1,272 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PlanCard from '../components/PlanCard.astro';
+import RegisterForm from '../components/RegisterForm.astro';
+---
+
+<Layout
+  title="RoomioHub — Gestion hotelera inteligente"
+  description="Sistema de gestion integral para hoteles: habitaciones, reservas, limpieza y mas. Planes desde S/ 89/mes."
+>
+  <!-- Hero -->
+  <header style="background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);color:#fff;padding:5rem 0;text-align:center">
+    <div class="container">
+      <h1 style="font-size:2.8rem;font-weight:800;margin-bottom:1rem">RoomioHub</h1>
+      <p style="font-size:1.2rem;opacity:.9;max-width:600px;margin:0 auto 2rem">
+        Gestiona tu hotel, habitaciones, reservas y personal desde un solo lugar.
+        Comienza hoy con una prueba gratuita de 30 dias.
+      </p>
+      <a href="#plans" class="btn btn-secondary btn-lg">Ver planes</a>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;text-align:center">
+        <div style="padding:1.5rem">
+          <div style="font-size:2rem;margin-bottom:.5rem">🏨</div>
+          <h3 style="font-weight:600;margin-bottom:.5rem">Multi-sede</h3>
+          <p style="color:#666;font-size:.9rem">Administra varios locales desde una sola cuenta</p>
+        </div>
+        <div style="padding:1.5rem">
+          <div style="font-size:2rem;margin-bottom:.5rem">📅</div>
+          <h3 style="font-weight:600;margin-bottom:.5rem">Reservas</h3>
+          <p style="color:#666;font-size:.9rem">Gestion de habitaciones y reservas en tiempo real</p>
+        </div>
+        <div style="padding:1.5rem">
+          <div style="font-size:2rem;margin-bottom:.5rem">🧹</div>
+          <h3 style="font-weight:600;margin-bottom:.5rem">Limpieza</h3>
+          <p style="color:#666;font-size:.9rem">Control de limpieza y mantenimiento de habitaciones</p>
+        </div>
+        <div style="padding:1.5rem">
+          <div style="font-size:2rem;margin-bottom:.5rem">📊</div>
+          <h3 style="font-weight:600;margin-bottom:.5rem">Reportes</h3>
+          <p style="color:#666;font-size:.9rem">Metricas y estadisticas de ocupacion e ingresos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans -->
+  <section id="plans" class="section" style="background:#fff">
+    <div class="container">
+      <h2 class="section-title">Planes y precios</h2>
+      <p class="section-subtitle">30 dias de prueba gratis en todos los planes</p>
+
+      <div id="plans-container" style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap">
+        <p style="text-align:center;color:#9ca3af">Cargando planes...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registration (hidden until plan selected) -->
+  <div id="register-container"></div>
+
+  <!-- Footer -->
+  <footer style="background:#1a1a2e;color:#9ca3af;padding:2rem 0;text-align:center;font-size:.85rem">
+    <div class="container">
+      <p>&copy; {new Date().getFullYear()} RoomioHub. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  interface PlanResponse {
+    id: string;
+    nombre: string;
+    precioMensual: number;
+    maxHabitaciones: number;
+    maxUsuarios: number;
+    maxSedes: number;
+    flagModuloPromociones: boolean;
+  }
+
+  const API_BASE = `${window.location.origin}/api/v1`;
+  let selectedPlanId: string | null = null;
+  let selectedPlanName: string | null = null;
+
+  async function loadPlans() {
+    const container = document.getElementById('plans-container')!;
+    try {
+      const res = await fetch(`${API_BASE}/plans`);
+      if (!res.ok) throw new Error('Error al cargar planes');
+      const plans: PlanResponse[] = await res.json();
+
+      if (plans.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#9ca3af">No hay planes disponibles</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      plans.forEach(plan => {
+        const card = document.createElement('div');
+        card.innerHTML = createPlanCardHTML(plan);
+        container.appendChild(card.firstElementChild!);
+
+        const btn = card.querySelector('.select-plan') as HTMLButtonElement;
+        btn?.addEventListener('click', () => selectPlan(plan));
+      });
+    } catch {
+      container.innerHTML = '<p style="text-align:center;color:#9ca3af">Error al cargar los planes. Intenta de nuevo.</p>';
+    }
+  }
+
+  function createPlanCardHTML(plan: PlanResponse): string {
+    const features = [
+      { label: 'Habitaciones', value: plan.maxHabitaciones === -1 ? 'Ilimitadas' : String(plan.maxHabitaciones) },
+      { label: 'Usuarios', value: plan.maxUsuarios === -1 ? 'Ilimitados' : String(plan.maxUsuarios) },
+      { label: 'Sedes', value: plan.maxSedes === -1 ? 'Ilimitadas' : String(plan.maxSedes) },
+      { label: 'Promociones', value: plan.flagModuloPromociones ? 'Incluido' : 'No incluido' },
+    ];
+
+    return `
+    <div class="plan-card" style="
+      background:#fff;border-radius:1rem;padding:2rem;text-align:center;
+      border:2px solid #e5e7eb;flex:1;min-width:280px;max-width:340px;
+      display:flex;flex-direction:column;transition:all .25s
+    ">
+      <div style="text-transform:uppercase;letter-spacing:.1em;font-size:.85rem;font-weight:700;color:#6b7280;margin-bottom:1rem">${plan.nombre}</div>
+      <div style="font-size:2.5rem;font-weight:800;color:#1a1a2e;margin-bottom:.25rem">
+        S/ ${plan.precioMensual.toFixed(2)}
+        <span style="font-size:1rem;font-weight:400;color:#9ca3af">/mes</span>
+      </div>
+      <ul style="list-style:none;text-align:left;margin:1.5rem 0;flex:1">
+        ${features.map(f => `
+          <li style="padding:.5rem 0;font-size:.9rem;color:${f.value === 'No incluido' ? '#d1d5db' : '#374351'};border-bottom:1px solid #f3f4f6">
+            <span style="margin-right:.5rem;font-weight:700;color:${f.value === 'No incluido' ? '#d1d5db' : '#16a34a'}">${f.value === 'No incluido' ? '✕' : '✓'}</span>
+            <strong>${f.value}</strong> ${f.label}
+          </li>
+        `).join('')}
+      </ul>
+      <button class="btn btn-primary btn-lg select-plan" style="width:100%;margin-top:1rem" data-plan="${plan.id}">
+        Seleccionar plan
+      </button>
+    </div>`;
+  }
+
+  function selectPlan(plan: PlanResponse) {
+    selectedPlanId = plan.id;
+    selectedPlanName = plan.nombre;
+
+    document.querySelectorAll('.plan-card').forEach(c => {
+      (c as HTMLElement).style.borderColor = '#e5e7eb';
+      (c as HTMLElement).style.boxShadow = '';
+    });
+
+    document.getElementById('register-container')!.innerHTML = `
+      <div id="register-section" style="background:#fff;padding:4rem 0">
+        <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
+          <h2 style="font-size:2rem;font-weight:700;text-align:center;margin-bottom:.5rem">Completa tu registro</h2>
+          <p style="text-align:center;color:#666;margin-bottom:2.5rem;font-size:1.05rem">
+            Plan seleccionado: <strong>${plan.nombre}</strong>
+          </p>
+          <form id="register-form" style="max-width:500px;margin:0 auto" autocomplete="off">
+            <input type="hidden" id="planId" value="${plan.id}" />
+            <div class="field" id="field-nombreComercial">
+              <label for="nombreComercial">Nombre comercial de la empresa</label>
+              <input type="text" id="nombreComercial" placeholder="Mi Hotel SAC" required maxlength="255" />
+              <small>Campo requerido</small>
+            </div>
+            <div class="field" id="field-ruc">
+              <label for="ruc">RUC</label>
+              <input type="text" id="ruc" placeholder="20123456789" required minlength="11" maxlength="20" />
+              <small>El RUC debe tener entre 11 y 20 caracteres</small>
+            </div>
+            <div class="field" id="field-nombre">
+              <label for="nombre">Tu nombre completo</label>
+              <input type="text" id="nombre" placeholder="Juan Perez" required maxlength="150" />
+              <small>Campo requerido</small>
+            </div>
+            <div class="field" id="field-username">
+              <label for="username">Nombre de usuario</label>
+              <input type="text" id="username" placeholder="juan_admin" required maxlength="100" />
+              <small>Campo requerido</small>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg" style="width:100%" id="submit-btn">
+              Pagar con MercadoPago
+            </button>
+            <p style="text-align:center;margin-top:.75rem;font-size:.8rem;color:#9ca3af">
+              Seras redirigido a MercadoPago para completar el pago
+            </p>
+          </form>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('register-section')!.scrollIntoView({ behavior: 'smooth' });
+
+    document.getElementById('register-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      handleSubmit();
+    });
+  }
+
+  function showToast(message: string, type: 'error' | 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+  function setFieldError(fieldId: string, show: boolean) {
+    const field = document.getElementById(`field-${fieldId}`);
+    if (field) field.classList.toggle('error', show);
+  }
+
+  async function handleSubmit() {
+    const formData = {
+      planId: (document.getElementById('planId') as HTMLInputElement).value,
+      nombreComercial: (document.getElementById('nombreComercial') as HTMLInputElement).value.trim(),
+      ruc: (document.getElementById('ruc') as HTMLInputElement).value.trim(),
+      nombre: (document.getElementById('nombre') as HTMLInputElement).value.trim(),
+      username: (document.getElementById('username') as HTMLInputElement).value.trim(),
+    };
+
+    ['nombreComercial', 'ruc', 'nombre', 'username'].forEach(f => setFieldError(f, !formData[f as keyof typeof formData]));
+    if (formData.ruc && formData.ruc.length < 11) setFieldError('ruc', true);
+    if (!formData.planId) { showToast('Selecciona un plan primero', 'error'); return; }
+
+    const hasErrors = ['nombreComercial', 'ruc', 'nombre', 'username'].some(f => !formData[f as keyof typeof formData])
+      || (formData.ruc && formData.ruc.length < 11);
+    if (hasErrors) return;
+
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Creando pago...';
+
+    try {
+      const res = await fetch(`${API_BASE}/mercadopago/create-preference`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.status === 409) {
+        const err = await res.json();
+        showToast(err.mensaje || 'Ya existe una cuenta con ese RUC', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Pagar con MercadoPago';
+        return;
+      }
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ mensaje: 'Error al crear el pago' }));
+        showToast(err.mensaje || 'Error al crear el pago', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Pagar con MercadoPago';
+        return;
+      }
+
+      const data = await res.json();
+      window.location.href = data.initPoint;
+    } catch {
+      showToast('Error de conexion. Intenta de nuevo.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Pagar con MercadoPago';
+    }
+  }
+
+  loadPlans();
+</script>

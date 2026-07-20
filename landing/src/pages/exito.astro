@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Pago exitoso — RoomioHub"
+  description="Tu pago se ha procesado correctamente"
+>
+  <main style="display:flex;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:2rem">
+    <div class="container">
+      <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+      <h1 style="font-size:2.2rem;font-weight:800;margin-bottom:1rem;color:#16a34a">Pago exitoso</h1>
+      <p style="font-size:1.1rem;color:#666;max-width:500px;margin:0 auto 2rem">
+        Tu suscripcion se ha activado correctamente. En unos momentos recibiras tus credenciales de acceso.
+        Revisa el panel de MercadoPago para mas detalles.
+      </p>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1.5rem;max-width:500px;margin:0 auto 2rem;text-align:left">
+        <h3 style="font-weight:600;margin-bottom:.75rem;color:#166534">¿Que sigue?</h3>
+        <ol style="color:#374151;font-size:.9rem;padding-left:1.25rem;display:flex;flex-direction:column;gap:.5rem">
+          <li>Te enviaremos las credenciales de acceso a tu correo (proximamente)</li>
+          <li>Accede al sistema principal de RoomioHub con tu usuario y contraseña</li>
+          <li>Configura tu hotel, habitaciones y personal</li>
+        </ol>
+      </div>
+      <a href="/" class="btn btn-primary btn-lg">Volver al inicio</a>
+    </div>
+  </main>
+
+  <footer style="background:#1a1a2e;color:#9ca3af;padding:2rem 0;text-align:center;font-size:.85rem">
+    <div class="container">
+      <p>&copy; {new Date().getFullYear()} RoomioHub. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</Layout>

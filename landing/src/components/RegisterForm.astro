@@ -1,0 +1,124 @@
+---
+export interface Props {
+  selectedPlanId: string;
+  selectedPlanName: string;
+}
+
+const { selectedPlanId, selectedPlanName } = Astro.props;
+---
+
+<div id="register-section" class="section" style="background:#fff">
+  <div class="container">
+    <h2 class="section-title">Completa tu registro</h2>
+    <p class="section-subtitle">
+      Plan seleccionado: <strong>{selectedPlanName}</strong>
+    </p>
+
+    <form id="register-form" style="max-width:500px;margin:0 auto">
+      <input type="hidden" id="planId" value={selectedPlanId} />
+
+      <div class="field" id="field-nombreComercial">
+        <label for="nombreComercial">Nombre comercial de la empresa</label>
+        <input type="text" id="nombreComercial" placeholder="Mi Hotel SAC" required maxlength="255" />
+        <small>Campo requerido</small>
+      </div>
+
+      <div class="field" id="field-ruc">
+        <label for="ruc">RUC</label>
+        <input type="text" id="ruc" placeholder="20123456789" required minlength="11" maxlength="20" />
+        <small>El RUC debe tener entre 11 y 20 caracteres</small>
+      </div>
+
+      <div class="field" id="field-nombre">
+        <label for="nombre">Tu nombre completo</label>
+        <input type="text" id="nombre" placeholder="Juan Perez" required maxlength="150" />
+        <small>Campo requerido</small>
+      </div>
+
+      <div class="field" id="field-username">
+        <label for="username">Nombre de usuario</label>
+        <input type="text" id="username" placeholder="juan_admin" required maxlength="100" />
+        <small>Campo requerido</small>
+      </div>
+
+      <button type="submit" class="btn btn-success btn-lg" style="width:100%" id="submit-btn">
+        Pagar con MercadoPago
+      </button>
+      <p style="text-align:center;margin-top:.75rem;font-size:.8rem;color:#9ca3af">
+        Seras redirigido a MercadoPago para completar el pago
+      </p>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE = `${window.location.origin}/api/v1`;
+
+  function showToast(message: string, type: 'error' | 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+  function setFieldError(fieldId: string, show: boolean) {
+    const field = document.getElementById(`field-${fieldId}`);
+    if (field) field.classList.toggle('error', show);
+  }
+
+  document.getElementById('register-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      planId: (document.getElementById('planId') as HTMLInputElement).value,
+      nombreComercial: (document.getElementById('nombreComercial') as HTMLInputElement).value.trim(),
+      ruc: (document.getElementById('ruc') as HTMLInputElement).value.trim(),
+      nombre: (document.getElementById('nombre') as HTMLInputElement).value.trim(),
+      username: (document.getElementById('username') as HTMLInputElement).value.trim(),
+    };
+
+    ['nombreComercial', 'ruc', 'nombre', 'username'].forEach(f => setFieldError(f, !formData[f as keyof typeof formData]));
+    if (formData.ruc && formData.ruc.length < 11) setFieldError('ruc', true);
+    if (!formData.planId) { showToast('Selecciona un plan primero', 'error'); return; }
+
+    const hasErrors = ['nombreComercial', 'ruc', 'nombre', 'username'].some(f => !formData[f as keyof typeof formData])
+      || (formData.ruc && formData.ruc.length < 11);
+    if (hasErrors) return;
+
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Creando pago...';
+
+    try {
+      const res = await fetch(`${API_BASE}/mercadopago/create-preference`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.status === 409) {
+        const err = await res.json();
+        showToast(err.mensaje || 'Ya existe una cuenta con ese RUC', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Pagar con MercadoPago';
+        return;
+      }
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ mensaje: 'Error al crear el pago' }));
+        showToast(err.mensaje || 'Error al crear el pago', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Pagar con MercadoPago';
+        return;
+      }
+
+      const data = await res.json();
+      window.location.href = data.initPoint;
+    } catch {
+      showToast('Error de conexion. Intenta de nuevo.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Pagar con MercadoPago';
+    }
+  });
+</script>

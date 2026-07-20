@@ -15,31 +15,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FindPlanesService {
 
-    private final PlanRepository planRepository;
+  private final PlanRepository planRepository;
 
-    @Transactional(readOnly = true)
-    public List<PlanResponse> execute() {
-        log.info("Consultando catalogo de planes activos");
+  @Transactional(readOnly = true)
+  public List<PlanResponse> execute() {
+    log.info("Consultando catalogo de planes activos");
 
-        List<PlanEntity> planes = planRepository.findAll().stream()
-                .filter(p -> Boolean.TRUE.equals(p.getActivo()))
-                .toList();
+    return planRepository.findAll()
+      .stream()
+      .map(this::toResponse)
+      .toList();
+        
+  }
 
-        return planes.stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    private PlanResponse toResponse(PlanEntity entity) {
-        return PlanResponse.builder()
-                .id(entity.getId())
-                .nombre(entity.getNombre())
-                .precioMensual(entity.getPrecioMensual())
-                .maxHabitaciones(entity.getMaxHabitaciones())
-                .maxUsuarios(entity.getMaxUsuarios())
-                .maxSedes(entity.getMaxSedes())
-                .flagModuloPromociones(entity.getFlagModuloPromociones())
-                .build();
-    }
+  private PlanResponse toResponse(PlanEntity entity) {
+    return PlanResponse.builder()
+        .id(entity.getId())
+        .nombre(entity.getNombre())
+        .precioMensual(entity.getPrecioMensual())
+        .maxHabitaciones(entity.getMaxHabitaciones())
+        .maxUsuarios(entity.getMaxUsuarios())
+        .maxSedes(entity.getMaxSedes())
+        .flagModuloPromociones(entity.getFlagModuloPromociones())
+        .build();
+  }
 
 }

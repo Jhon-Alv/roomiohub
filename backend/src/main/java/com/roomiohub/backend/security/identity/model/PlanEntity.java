@@ -15,29 +15,29 @@ import java.util.UUID;
 @Table(name = "planes")
 public class PlanEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @Column(name = "nombre", nullable = false, unique = true, length = 50)
-    private String nombre;
+  @Column(name = "nombre", nullable = false, unique = true, length = 50)
+  private String nombre;
 
-    @Column(name = "max_sedes", nullable = false)
-    private Integer maxSedes;
+  @Column(name = "max_sedes", nullable = false)
+  private Integer maxSedes;
 
-    @Column(name = "max_habitaciones", nullable = false)
-    private Integer maxHabitaciones;
+  @Column(name = "max_habitaciones", nullable = false)
+  private Integer maxHabitaciones;
 
-    @Column(name = "max_usuarios", nullable = false)
-    private Integer maxUsuarios;
+  @Column(name = "max_usuarios", nullable = false)
+  private Integer maxUsuarios;
 
-    @Column(name = "flag_modulo_promociones", nullable = false)
-    private Boolean flagModuloPromociones;
+  @Column(name = "flag_modulo_promociones", nullable = false)
+  private Boolean flagModuloPromociones;
 
-    @Column(name = "precio_mensual", nullable = false, precision = 10, scale = 2)
-    private BigDecimal precioMensual;
+  @Column(name = "precio_mensual", nullable = false, precision = 10, scale = 2)
+  private BigDecimal precioMensual;
 
-    @Column(name = "activo", insertable = false)
-    private Boolean activo;
+  @Column(name = "activo", insertable = false)
+  private Boolean activo;
 
 }

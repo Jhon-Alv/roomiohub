@@ -9,11 +9,13 @@ import com.roomiohub.backend.security.identity.repository.PlanRepository;
 import com.roomiohub.backend.shared.exceptions.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +28,9 @@ public class CreatePreferenceService {
     private final PlanRepository planRepository;
     private final CuentaRepository cuentaRepository;
     private final MercadoPagoConfig mpConfig;
+
+    @Value("${landing.base-url}")
+    private String landingBaseUrl;
 
     @Transactional
     public PreferenceResponse execute(CreatePreferenceRequest request) {
@@ -42,32 +47,34 @@ public class CreatePreferenceService {
 
         String idempotencyKey = "reg-" + request.getRuc();
 
-        Map<String, Object> preferenceData = Map.of(
-            "items", List.of(
-                Map.of(
-                    "id", plan.getId().toString(),
-                    "title", "Plan " + plan.getNombre() + " - RoomioHub",
-                    "description", "Suscripcion mensual. Max " + plan.getMaxHabitaciones() + " habitaciones, " + plan.getMaxUsuarios() + " usuarios.",
-                    "quantity", 1,
-                    "currency_id", "PEN",
-                    "unit_price", plan.getPrecioMensual().doubleValue()
-                )
-            ),
-            "external_reference", idempotencyKey,
-            "back_urls", Map.of(
-                "success", "http://18.221.126.33/exito",
-                "failure", "http://18.221.126.33/?status=failure",
-                "pending", "http://18.221.126.33/?status=pending"
-            ),
-            "auto_return", "approved",
-            "metadata", Map.of(
-                "ruc", request.getRuc(),
-                "plan_id", request.getPlanId(),
-                "nombre_comercial", request.getNombreComercial(),
-                "nombre", request.getNombre(),
-                "username", request.getUsername()
-            )
-        );
+        Map<String, Object> item = new LinkedHashMap<>();
+        item.put("id", plan.getId().toString());
+        item.put("title", "Plan " + plan.getNombre() + " - RoomioHub");
+        item.put("description", "Suscripcion mensual. Max " + plan.getMaxHabitaciones() + " habitaciones, " + plan.getMaxUsuarios() + " usuarios.");
+        item.put("quantity", 1);
+        item.put("currency_id", "PEN");
+        item.put("unit_price", plan.getPrecioMensual().doubleValue());
+
+        Map<String, Object> backUrls = new LinkedHashMap<>();
+        backUrls.put("success", landingBaseUrl + "/exito");
+        backUrls.put("failure", landingBaseUrl + "/?status=failure");
+        backUrls.put("pending", landingBaseUrl + "/?status=pending");
+
+        Map<String, Object> metadata = new LinkedHashMap<>();
+        metadata.put("ruc", request.getRuc());
+        metadata.put("plan_id", request.getPlanId());
+        metadata.put("nombre_comercial", request.getNombreComercial());
+        metadata.put("nombre", request.getNombre());
+        metadata.put("username", request.getUsername());
+
+        Map<String, Object> preferenceData = new LinkedHashMap<>();
+        preferenceData.put("items", List.of(item));
+        preferenceData.put("external_reference", idempotencyKey);
+        preferenceData.put("back_urls", backUrls);
+        preferenceData.put("auto_return", "approved");
+        preferenceData.put("metadata", metadata);
+
+        log.info("Enviando preferencia a MercadoPago. back_urls: {}", backUrls);
 
         RestTemplate restTemplate = new RestTemplate();
 

@@ -413,7 +413,20 @@
       tags: [db_init]
 
     # ============================================================
-    # 10. SUDO PASSWORDLESS PARA EC2-USER
+    # 10. DESPLEGAR CADDYFILE
+    # ============================================================
+    - name: Desplegar configuracion de Caddy (Caddyfile)
+      template:
+        src: Caddyfile.j2
+        dest: /etc/caddy/Caddyfile
+        owner: caddy
+        group: caddy
+        mode: "0644"
+      notify: reload caddy
+      tags: [caddy]
+
+    # ============================================================
+    # 11. SUDO PASSWORDLESS PARA EC2-USER
     # ============================================================
     - name: Permitir a ec2-user reiniciar el servicio sin password
       copy:

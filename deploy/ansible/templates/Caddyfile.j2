@@ -12,6 +12,13 @@ http:// {
         }
     }
 
+    handle /app/* {
+        root * /opt/app/frontend/dist
+        encode gzip zstd
+        try_files {path} /app/index.html
+        file_server
+    }
+
     handle {
         root * /opt/app/landing
         encode gzip zstd

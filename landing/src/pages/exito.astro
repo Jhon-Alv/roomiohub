@@ -3,18 +3,31 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout
-  title="Pago exitoso — RoomioHub"
-  description="Tu pago se ha procesado correctamente"
+  title="Registro exitoso — RoomioHub"
+  description="Tu cuenta se ha creado correctamente"
 >
   <main class="max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop flex items-center justify-center min-h-[60vh]">
-    <div class="text-center max-w-lg">
+    <div class="text-center max-w-lg" id="exito-content">
       <div class="text-7xl mb-6">🎉</div>
-      <h1 class="font-display-lg-mobile md:font-headline-md text-display-lg-mobile md:text-headline-md text-green-600 mb-4">Pago exitoso</h1>
+      <h1 class="font-display-lg-mobile md:font-headline-md text-display-lg-mobile md:text-headline-md text-green-600 mb-4">Registro exitoso</h1>
       <p class="font-body-lg text-body-lg text-on-surface-variant mb-8">
-        Tu suscripcion se ha activado correctamente. En unos momentos recibiras tus credenciales de acceso.
-        Revisa el panel de MercadoPago para mas detalles.
+        Tu suscripcion se ha activado correctamente.
       </p>
-      <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-left mb-8">
+      <div id="credentials-box" class="hidden bg-primary text-white rounded-lg p-6 text-left mb-8">
+        <h3 class="font-semibold mb-3">Tus credenciales de acceso</h3>
+        <p class="text-sm text-primary-fixed-dim mb-4">Guarda esta informacion. No la volveras a ver.</p>
+        <div class="bg-white/10 rounded-lg p-4 space-y-2 text-sm font-mono">
+          <div class="flex justify-between">
+            <span class="text-primary-fixed-dim">Usuario:</span>
+            <span id="cred-username" class="font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-primary-fixed-dim">Contrasena:</span>
+            <span id="cred-password" class="font-semibold text-white"></span>
+          </div>
+        </div>
+      </div>
+      <div id="mercadopago-box" class="bg-green-50 border border-green-200 rounded-lg p-6 text-left mb-8">
         <h3 class="font-semibold mb-3 text-green-800">Que sigue?</h3>
         <ol class="text-on-surface-variant text-sm flex flex-col gap-2 pl-5 list-decimal">
           <li>Te enviaremos las credenciales de acceso a tu correo</li>
@@ -26,3 +39,15 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </main>
 </Layout>
+
+<script>
+  const isDirect = new URLSearchParams(window.location.search).get('direct') === 'true';
+  if (isDirect) {
+    document.getElementById('credentials-box')!.classList.remove('hidden');
+    document.getElementById('mercadopago-box')!.classList.add('hidden');
+    document.getElementById('cred-username')!.textContent = localStorage.getItem('tempUsername') || '';
+    document.getElementById('cred-password')!.textContent = localStorage.getItem('tempPassword') || '';
+    localStorage.removeItem('tempUsername');
+    localStorage.removeItem('tempPassword');
+  }
+</script>
